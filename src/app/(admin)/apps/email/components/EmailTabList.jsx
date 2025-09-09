@@ -2,7 +2,6 @@ import { Button, ButtonGroup, Card, Dropdown, DropdownHeader, DropdownMenu, Drop
 import IconifyIcon from '@/components/wrappers/IconifyIcon';
 import { useEmailContext } from '@/context/useEmailContext';
 import EmailPagination from './EmailPagination';
-import EmailViewOffcanvas from './EmailViewOffcanvas';
 import Draft from './tabs/Draft';
 import Important from './tabs/Important';
 import Inbox from './tabs/Inbox';
@@ -128,8 +127,6 @@ const EmailTabList = () => {
       </TabContent>
 
       <EmailPagination />
-
-      <EmailViewOffcanvas />
     </Card>;
 };
 export default EmailTabList;
