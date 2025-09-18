@@ -40,7 +40,6 @@ export const loadUserFromStorage = createAsyncThunk('user/loadFromStorage', asyn
 })
 
 export const listPayrollByEmployees = createAsyncThunk('listPayrollByEmployees/get-all', async (filters, thunkAPI) => {
-  console.log('filters', filters)
   try {
     const response = await getListPayrollByEmployees(filters)
     return response

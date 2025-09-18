@@ -2,14 +2,14 @@ import { useEffect } from 'react'
 import { CardBody, Col, Row, Card, Spinner, Table, Button } from 'react-bootstrap'
 import PageMetaData from '@/components/PageTitle'
 import { useDispatch, useSelector } from 'react-redux'
-import { useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import PageHeader from '../../../../components/PageHeader'
 import { employeeSalaryDetail } from '../../../../redux/features/salary/salarySlice'
 
 export default function EmployeeSalaryDetailPage() {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const { isLoading, salaryDetailed } = useSelector((state) => state.salary)
-  console.log('salaryDetailed', salaryDetailed)
   const [searchParams] = useSearchParams()
 
   const employeeId = searchParams.get('employeeId')
@@ -26,14 +26,24 @@ export default function EmployeeSalaryDetailPage() {
 
   return (
     <>
-      <PageMetaData title="Salary Details" />
+      <PageMetaData title="Salary Slip download" />
       <PageHeader
-        title="Salary Details"
-        breadcrumbItems={[{ label: 'Dashboard', href: '/' }, { label: 'Employee Payroll', href: '/payroll/list' }, { label: 'Salary Details' }]}
+        title="Salary Slip download"
+        breadcrumbItems={[
+          { label: 'Dashboard', href: '/' },
+          { label: 'Employee Payroll list', href: '/employee-payroll/list' },
+          { label: 'Salary Details', href: '/employee-payroll/salary-list' },
+          { label: 'Salary Slip download' },
+        ]}
         rightContent={
-          <Button size="sm" variant="success">
-            Download Salary Slip
-          </Button>
+          <div className="d-flex gap-2">
+            <Button size="sm" variant="success">
+              Download Salary Slip
+            </Button>
+            <Button size="sm" variant="outline-secondary" onClick={() => navigate(-1)}>
+              Back
+            </Button>
+          </div>
         }
       />
 

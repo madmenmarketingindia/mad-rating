@@ -33,6 +33,7 @@ export default function CreateUser() {
         await dispatch(registerUser(data)).unwrap()
         toast.success('User created successfully!')
         reset()
+        navigate(-1)
       }
     } catch (err) {
       toast.error(err || '❌ Failed to save user')
@@ -65,7 +66,6 @@ export default function CreateUser() {
         rightContent={
           <div className="d-flex gap-2">
             <Button size="sm" variant="outline-secondary" onClick={() => navigate(-1)}>
-              <IconifyIcon icon="bx:arrow-back" className="me-1" />
               Back
             </Button>
           </div>

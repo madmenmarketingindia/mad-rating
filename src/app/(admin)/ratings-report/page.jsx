@@ -1,9 +1,9 @@
-import { CardBody, Col, Row, Button, Card, Spinner, Form } from 'react-bootstrap'
+import { CardBody, Col, Row, Button, Card, Spinner, Form, Pagination } from 'react-bootstrap'
 import PageMetaData from '@/components/PageTitle'
 import IconifyIcon from '@/components/wrappers/IconifyIcon'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { employeeWiseRatingReport, singleMonthRating } from '../../../redux/features/ratingReport/ratingReportSlice'
+import { employeeWiseRatingReport } from '../../../redux/features/ratingReport/ratingReportSlice'
 import { Link } from 'react-router-dom'
 import PageHeader from '@/components/PageHeader'
 
@@ -18,16 +18,18 @@ export default function RatingsReports() {
   })
 
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' })
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 10
 
   useEffect(() => {
     dispatch(employeeWiseRatingReport(filters))
+    setCurrentPage(totalPages || 1)
   }, [dispatch, filters])
 
   const handleFilterChange = (e) => {
     setFilters({ ...filters, [e.target.name]: e.target.value })
   }
 
-  // Sorting handler
   const handleSort = (key) => {
     let direction = 'asc'
     if (sortConfig.key === key && sortConfig.direction === 'asc') {
@@ -36,12 +38,27 @@ export default function RatingsReports() {
     setSortConfig({ key, direction })
   }
 
-  // Apply sorting
-  const sortedData = allEmployeeRating?.data
-    ? [...allEmployeeRating.data].sort((a, b) => {
-        if (!sortConfig.key) return 0
-        const valA = a[sortConfig.key] ?? ''
-        const valB = b[sortConfig.key] ?? ''
+  const renderSortIcon = (key) => {
+    if (sortConfig.key !== key) return '⬍'
+    return sortConfig.direction === 'asc' ? '↑' : '↓'
+  }
+
+  // --- Filter + Sort + Pagination ---
+  const processedData = useMemo(() => {
+    let data = allEmployeeRating?.data || []
+
+    // 🔍 Search filter
+    if (filters.name) {
+      const search = filters.name.toLowerCase()
+      data = data.filter((r) => `${r?.employeeId?.firstName || ''} ${r?.employeeId?.lastName || ''}`.toLowerCase().includes(search))
+    }
+
+    // 🔽 Sorting
+    if (sortConfig.key) {
+      data = [...data].sort((a, b) => {
+        const getValue = (obj, path) => path.split('.').reduce((o, key) => (o ? o[key] : ''), obj)
+        const valA = getValue(a, sortConfig.key) ?? ''
+        const valB = getValue(b, sortConfig.key) ?? ''
         if (typeof valA === 'string') {
           return sortConfig.direction === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA)
         }
@@ -50,12 +67,14 @@ export default function RatingsReports() {
         }
         return 0
       })
-    : []
+    }
 
-  const renderSortIcon = (key) => {
-    if (sortConfig.key !== key) return '⬍'
-    return sortConfig.direction === 'asc' ? '↑' : '↓'
-  }
+    return data
+  }, [allEmployeeRating, filters, sortConfig])
+
+  // --- Pagination ---
+  const totalPages = Math.ceil(processedData.length / itemsPerPage)
+  const paginatedData = processedData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
 
   return (
     <>
@@ -74,11 +93,10 @@ export default function RatingsReports() {
               ))}
             </Form.Select>
 
-            {/* Year dropdown (dynamic) */}
             <Form.Select size="sm" name="year" value={filters.year} onChange={handleFilterChange}>
               <option value="">Year</option>
               {Array.from({ length: 6 }, (_, i) => {
-                const year = new Date().getFullYear() - 5 + i // from currentYear-5
+                const year = new Date().getFullYear() - 5 + i
                 return (
                   <option key={year} value={year}>
                     {year}
@@ -89,13 +107,12 @@ export default function RatingsReports() {
           </div>
         }
       />
+
       <Row>
         <Col>
           <Card>
             <CardBody>
-              {/* --- Filters --- */}
               <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2 mb-3">
-                {/* Smaller search field */}
                 <Form.Control
                   type="search"
                   name="name"
@@ -111,12 +128,11 @@ export default function RatingsReports() {
                 </Button>
               </div>
 
-              {/* --- Table --- */}
               <div className="table-responsive">
                 <table className="table table-bordered align-middle">
                   <thead className="table-light">
                     <tr>
-                      <th onClick={() => handleSort('employeeId')}>Employee {renderSortIcon('employeeId')}</th>
+                      <th onClick={() => handleSort('employeeId.firstName')}>Employee {renderSortIcon('employeeId.firstName')}</th>
                       <th onClick={() => handleSort('categories.ethics')}>Ethics {renderSortIcon('categories.ethics')}</th>
                       <th onClick={() => handleSort('categories.discipline')}>Discipline {renderSortIcon('categories.discipline')}</th>
                       <th onClick={() => handleSort('categories.workEthics')}>Work Ethics {renderSortIcon('categories.workEthics')}</th>
@@ -135,26 +151,28 @@ export default function RatingsReports() {
                           <Spinner animation="border" size="sm" /> Loading...
                         </td>
                       </tr>
-                    ) : sortedData?.length > 0 ? (
-                      sortedData.map((rating) => (
+                    ) : paginatedData?.length > 0 ? (
+                      paginatedData.map((rating) => (
                         <tr key={rating._id}>
                           <td>
-                            {rating.employeeId?.firstName} {rating.employeeId?.lastName}
+                            {rating?.employeeId?.firstName} {rating?.employeeId?.lastName}
                           </td>
-                          <td>{rating.categories.ethics}</td>
-                          <td>{rating.categories.discipline}</td>
-                          <td>{rating.categories.workEthics}</td>
-                          <td>{rating.categories.output}</td>
-                          <td>{rating.categories.teamPlay}</td>
-                          <td>{rating.categories.leadership}</td>
-                          <td>{rating.categories.extraMile}</td>
+                          <td>{rating?.categories.ethics}</td>
+                          <td>{rating?.categories.discipline}</td>
+                          <td>{rating?.categories.workEthics}</td>
+                          <td>{rating?.categories.output}</td>
+                          <td>{rating?.categories.teamPlay}</td>
+                          <td>{rating?.categories.leadership}</td>
+                          <td>{rating?.categories.extraMile}</td>
                           <td>
-                            <strong>{rating.averageScore}</strong>
+                            <strong>{rating?.averageScore}</strong>
                           </td>
                           <td>
                             <Button
                               as={Link}
-                              to={`/ratings-report/add-rating?employeeId=${rating?.employeeId?._id}`}
+                              to={`/ratings-report/add-rating?employeeId=${rating?.employeeId?._id}&employeeName=${encodeURIComponent(
+                                `${rating?.employeeId?.firstName || ''} ${rating?.employeeId?.lastName || ''}`,
+                              )}`}
                               variant="outline-primary"
                               size="sm">
                               <IconifyIcon icon="bx:edit" className="me-1" /> Edit
@@ -172,6 +190,27 @@ export default function RatingsReports() {
                   </tbody>
                 </table>
               </div>
+
+              {/* ✅ Pagination */}
+              {totalPages > 1 && (
+                <div className="d-flex justify-content-center justify-content-md-end mt-3">
+                  <Pagination>
+                    <Pagination.Prev onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))} disabled={currentPage === 1}>
+                      Prev
+                    </Pagination.Prev>
+
+                    {[...Array(totalPages).keys()].map((num) => (
+                      <Pagination.Item key={num + 1} active={num + 1 === currentPage} onClick={() => setCurrentPage(num + 1)}>
+                        {num + 1}
+                      </Pagination.Item>
+                    ))}
+
+                    <Pagination.Next onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))} disabled={currentPage === totalPages}>
+                      Next
+                    </Pagination.Next>
+                  </Pagination>
+                </div>
+              )}
             </CardBody>
           </Card>
         </Col>

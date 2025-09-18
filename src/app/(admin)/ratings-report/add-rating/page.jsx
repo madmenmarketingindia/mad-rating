@@ -3,7 +3,7 @@ import { CardBody, Col, Row, Card, Form, Button, Spinner, Table, Pagination } fr
 import PageMetaData from '@/components/PageTitle'
 import { useDispatch, useSelector } from 'react-redux'
 import { createRating, employeeRatingHistory, singleMonthRating } from '../../../../redux/features/ratingReport/ratingReportSlice'
-import { useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import PageHeader from '../../../../components/PageHeader'
 import { getEmployees } from '../../../../redux/features/employee/employeeSlice'
 
@@ -14,6 +14,7 @@ export default function RatingsReports() {
   const currentYear = currentDate.getFullYear()
   const [searchParams] = useSearchParams()
   const queryEmployeeId = searchParams.get('employeeId')
+  const emName = searchParams.get('employeeName')
 
   const { monthRating, ratingHistory, isLoading } = useSelector((state) => state.ratingReport)
   const { allEmployee } = useSelector((state) => state.employee)
@@ -108,7 +109,10 @@ export default function RatingsReports() {
       year: Number(formFilters.year),
       categories,
     }
-    dispatch(createRating(payload))
+    const response = dispatch(createRating(payload))
+    if (response.success) {
+      dispatch(employeeRatingHistory(selectedEmployeeId))
+    }
   }
 
   const employeeName = monthRating?.data?.employeeId ? `${monthRating.data.employeeId.firstName} ${monthRating.data.employeeId.lastName}` : 'Employee'
@@ -153,8 +157,12 @@ export default function RatingsReports() {
     <>
       <PageMetaData title="Employee Ratings" />
       <PageHeader
-        title="Employee Ratings"
-        breadcrumbItems={[{ label: 'Dashboard', href: '/' }, { label: 'Employee Rating List', href: '/ratings-reports/list' }, { label: 'Create' }]}
+        title={queryEmployeeId ? 'Edit Employee Rating' : 'Create Employee Rating'}
+        breadcrumbItems={[
+          { label: 'Dashboard', href: '/' },
+          { label: 'Employee Rating List', href: '/ratings-reports/list' },
+          { label: queryEmployeeId ? 'Edit Rating' : 'Create Rating' },
+        ]}
         rightContent={
           <div className="d-flex gap-2">
             {/* Employee Dropdown if not from query */}
@@ -191,6 +199,10 @@ export default function RatingsReports() {
                 )
               })}
             </Form.Select>
+
+            <Button as={Link} to="/ratings-reports/list" size="sm" variant="secondary">
+              Back
+            </Button>
           </div>
         }
       />
@@ -201,9 +213,13 @@ export default function RatingsReports() {
             <Card>
               <CardBody>
                 <Row className="align-items-center mb-3">
-                  <Col md={6}>
-                    <h5>{employeeName}</h5>
-                  </Col>
+                  <h5 className='text-capitalize'>
+                    {employeeName?.firstName || employeeName?.lastName
+                      ? `${employeeName?.firstName || ''} ${employeeName?.lastName || ''}`
+                      : emName
+                        ? emName
+                        : 'No data is available for this employee'}
+                  </h5>
                 </Row>
 
                 {isLoading ? (
@@ -224,7 +240,7 @@ export default function RatingsReports() {
                     </Row>
 
                     <div className="mt-3 d-flex justify-content-end">
-                      <Button onClick={handleSubmit}>Save Rating</Button>
+                      <Button onClick={handleSubmit}>{queryEmployeeId ? 'Update Rating' : 'Save Rating'}</Button>
                     </div>
                   </>
                 )}
@@ -240,7 +256,7 @@ export default function RatingsReports() {
           </Col>
           <Col className="text-end">
             <Form className="d-flex gap-2 justify-content-end">
-              <Form.Select size="sm" name="month" value={historyFilters.month} onChange={handleHistoryFilterChange}>
+              <Form.Select size="sm" name="month" value={historyFilters?.month} onChange={handleHistoryFilterChange}>
                 <option value="">All Months</option>
                 {Array.from({ length: 12 }, (_, i) => (
                   <option key={i + 1} value={i + 1}>
@@ -250,7 +266,7 @@ export default function RatingsReports() {
                   </option>
                 ))}
               </Form.Select>
-              <Form.Select size="sm" name="year" value={historyFilters.year} onChange={handleHistoryFilterChange}>
+              <Form.Select size="sm" name="year" value={historyFilters?.year} onChange={handleHistoryFilterChange}>
                 <option value="">All Years</option>
                 {Array.from({ length: 10 }, (_, i) => {
                   const year = currentYear - 5 + i
@@ -294,16 +310,16 @@ export default function RatingsReports() {
                         {currentItems.map((rating) => (
                           <tr key={rating._id}>
                             <td>{new Date(0, rating.month - 1).toLocaleString('default', { month: 'long' })}</td>
-                            <td>{rating.year}</td>
-                            <td>{rating.categories.ethics}</td>
-                            <td>{rating.categories.discipline}</td>
-                            <td>{rating.categories.workEthics}</td>
-                            <td>{rating.categories.output}</td>
-                            <td>{rating.categories.teamPlay}</td>
-                            <td>{rating.categories.leadership}</td>
-                            <td>{rating.categories.extraMile}</td>
+                            <td>{rating?.year}</td>
+                            <td>{rating?.categories?.ethics}</td>
+                            <td>{rating?.categories?.discipline}</td>
+                            <td>{rating?.categories?.workEthics}</td>
+                            <td>{rating?.categories?.output}</td>
+                            <td>{rating?.categories?.teamPlay}</td>
+                            <td>{rating?.categories?.leadership}</td>
+                            <td>{rating?.categories?.extraMile}</td>
                             <td>
-                              <strong>{rating.averageScore}</strong>
+                              <strong>{rating?.averageScore}</strong>
                             </td>
                           </tr>
                         ))}

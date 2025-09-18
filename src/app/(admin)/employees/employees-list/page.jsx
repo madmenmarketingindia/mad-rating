@@ -44,7 +44,7 @@ export default function EmployeesList() {
       setSortField(field)
       setSortOrder('asc')
     }
-    setCurrentPage(1) // Reset to first page when sorting
+    setCurrentPage(1)
   }
 
   // --- Helper to get nested fields ---
@@ -175,11 +175,7 @@ export default function EmployeesList() {
       <PageMetaData title="Employees" />
       <PageHeader
         title={'Employee List'}
-        breadcrumbItems={[
-          { label: 'Dashboard', href: '/' },
-          { label: 'Employee List', href: '/employees/employees-list' },
-          { label: 'Create Employee' },
-        ]}
+        breadcrumbItems={[{ label: 'Dashboard', href: '/' }, { label: 'Employee List' }]}
         rightContent={
           <div>
             <Button as={Link} to="/employees/employees-create" size="sm" variant="primary">
@@ -269,7 +265,7 @@ export default function EmployeesList() {
                                       {emp.lastName?.charAt(0)?.toUpperCase()}
                                     </div>
                                     <div>
-                                      <div className="fw-semibold">
+                                      <div className="fw-semibold text-capitalize">
                                         {emp.firstName} {emp.lastName}
                                       </div>
                                       <div className="text-muted small text-capitalize">
@@ -330,7 +326,7 @@ export default function EmployeesList() {
                                           to={`/employees/employees-profile?employeeId=${emp._id}`}
                                           className="dropdown-item text-decoration-none d-flex align-items-center gap-2 px-3 py-2"
                                           onClick={() => setDropdownOpen(null)}>
-                                          <IconifyIcon icon="bx:edit" />
+                                          <IconifyIcon icon="bx:show" />
                                           View Profile
                                         </Link>
                                         <Link
@@ -411,7 +407,7 @@ export default function EmployeesList() {
                                       to={`/employees/employees-profile?employeeId=${emp._id}`}
                                       className="dropdown-item text-decoration-none d-flex align-items-center gap-2 px-3 py-2"
                                       onClick={() => setDropdownOpen(null)}>
-                                      <IconifyIcon icon="bx:edit" />
+                                      <IconifyIcon icon="bx:show" />
                                       View Profile
                                     </Link>
                                     <Link

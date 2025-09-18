@@ -44,7 +44,7 @@ export default function EmployeesProfile() {
           { label: 'Employee Profile' },
         ]}
         rightContent={
-          <Link to="/employees/employees-list" className="btn btn-primary btn-sm">
+          <Link to="/employees/employees-list" className="btn btn-secondary btn-sm">
             Back
           </Link>
         }

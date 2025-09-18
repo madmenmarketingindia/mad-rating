@@ -132,7 +132,7 @@ export default function UpsertEmployeePayroll() {
     <>
       <PageMetaData title="Upsert Payroll" />
       <PageHeader
-        title="Employee Payroll Create "
+        title={employeeId ? 'Employee Payroll Edit' : 'Employee Payroll Create'}
         breadcrumbItems={[{ label: 'Dashboard', href: '/' }, { label: 'Employee Payroll', href: '/payroll/list' }, { label: 'Upsert' }]}
         rightContent={
           <div className="d-flex gap-2">
@@ -159,7 +159,7 @@ export default function UpsertEmployeePayroll() {
               ))}
             </Form.Select>
 
-            <Button size="sm" variant="outline-success" onClick={() => navigate(-1)}>
+            <Button size="sm" variant="outline-secondary" onClick={() => navigate(-1)}>
               Back
             </Button>
           </div>

@@ -7,7 +7,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getUsers, deleteUser } from '../../../../redux/features/user/userSlice'
 import toast from 'react-hot-toast'
 import PageHeader from '../../../../components/PageHeader'
-import Loader from '../../../../components/Loader'
 
 export default function UsersList() {
   const dispatch = useDispatch()
@@ -95,7 +94,7 @@ export default function UsersList() {
                     value={searchQuery}
                     onChange={(e) => {
                       setSearchQuery(e.target.value)
-                      setCurrentPage(1) // reset to page 1 when searching
+                      setCurrentPage(1)
                     }}
                   />
                 </div>

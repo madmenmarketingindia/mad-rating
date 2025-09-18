@@ -25,8 +25,6 @@ const LoginForm = () => {
   // Submit handler
   const onSubmit = handleSubmit(async (values) => {
     try {
-      console.log('🔹 Sending login request:', values)
-
       const response = await axios.post('https://dummyjson.com/auth/sign-in', values, {
         headers: { 'Content-Type': 'application/json' },
       })
