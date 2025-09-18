@@ -6,7 +6,7 @@ export const MENU_ITEMS = [
   },
   {
     key: 'dashboard',
-    icon: 'solar:home-2-broken',
+    icon: 'mdi:view-dashboard-outline',
     label: 'Dashboard',
     badge: {
       variant: 'success',
@@ -17,7 +17,7 @@ export const MENU_ITEMS = [
 
   {
     key: 'users',
-    icon: 'solar:home-2-broken',
+    icon: 'mdi:account-multiple-outline',
     label: 'User',
     badge: {
       variant: 'success',
@@ -28,7 +28,7 @@ export const MENU_ITEMS = [
 
   {
     key: 'employees',
-    icon: 'solar:home-2-broken',
+    icon: 'mdi:account-tie-outline',
     label: 'Employees',
     badge: {
       variant: 'success',
@@ -39,7 +39,7 @@ export const MENU_ITEMS = [
 
   {
     key: 'RatingsReports',
-    icon: 'solar:home-2-broken',
+    icon: 'mdi:star-check-outline',
     label: 'Ratings Reports',
     badge: {
       variant: 'success',
@@ -50,7 +50,7 @@ export const MENU_ITEMS = [
 
   {
     key: 'EmployeePayroll',
-    icon: 'solar:home-2-broken',
+    icon: 'mdi:currency-inr',
     label: 'Employee Payroll',
     badge: {
       variant: 'success',
@@ -61,7 +61,7 @@ export const MENU_ITEMS = [
 
   {
     key: 'profile',
-    icon: 'solar:home-2-broken',
+    icon: 'mdi:account-circle-outline',
     label: 'Profile',
     badge: {
       variant: 'success',
@@ -72,7 +72,7 @@ export const MENU_ITEMS = [
 
   {
     key: 'disciplinaryActions',
-    icon: 'solar:home-2-broken',
+    icon: 'mdi:alert-circle-outline',
     label: 'Disciplinary Actions',
     badge: {
       variant: 'success',
