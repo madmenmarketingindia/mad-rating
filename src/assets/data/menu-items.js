@@ -78,6 +78,6 @@ export const MENU_ITEMS = [
       variant: 'success',
     },
     url: '/disciplinary-actions/list',
-    roles: ['Admin'],
+    roles: ['Admin', 'Hr'],
   },
 ]
