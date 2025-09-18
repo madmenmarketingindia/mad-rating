@@ -1,69 +1,81 @@
-import { yupResolver } from '@hookform/resolvers/yup';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import * as yup from 'yup';
-import { useAuthContext } from '@/context/useAuthContext';
-import { useNotificationContext } from '@/context/useNotificationContext';
-import httpClient from '@/helpers/httpClient';
-const useSignIn = () => {
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
-  const {
-    saveSession
-  } = useAuthContext();
-  const [searchParams] = useSearchParams();
-  const {
-    showNotification
-  } = useNotificationContext();
-  const loginFormSchema = yup.object({
-    email: yup.string().email('Please enter a valid email').required('Please enter your email'),
-    password: yup.string().required('Please enter your password')
-  });
-  const {
-    control,
-    handleSubmit
-  } = useForm({
-    resolver: yupResolver(loginFormSchema),
-    defaultValues: {
-      email: 'test@techzaa.com',
-      password: 'password'
-    }
-  });
+const LoginForm = () => {
+  const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const dispatch = useDispatch()
+  const { isLoading } = useSelector((state) => state.user) || { isLoading: false }
+
+  // Validation schema
+  const schema = yup.object({
+    email: yup.string().email('Enter a valid email').required('Email is required'),
+    password: yup.string().required('Password is required'),
+  })
+
+  // react-hook-form
+  const { control, handleSubmit } = useForm({
+    resolver: yupResolver(schema),
+    defaultValues: { email: 'test@techzaa.com', password: 'password' },
+  })
+
+  // Redirect after login
   const redirectUser = () => {
-    const redirectLink = searchParams.get('redirectTo');
-    if (redirectLink) navigate(redirectLink);else navigate('/');
-  };
-  const login = handleSubmit(async values => {
+    const redirectTo = searchParams.get('redirectTo')
+    navigate(redirectTo || '/')
+  }
+
+  // Submit handler
+  const onSubmit = handleSubmit(async (values) => {
     try {
-      const res = await httpClient.post('/login', values);
-      if (res.data.token) {
-        saveSession({
-          ...(res.data ?? {}),
-          token: res.data.token
-        });
-        redirectUser();
-        showNotification({
-          message: 'Successfully logged in. Redirecting....',
-          variant: 'success'
-        });
-      }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (e) {
-      if (e.response?.data?.error) {
-        showNotification({
-          message: e.response?.data?.error,
-          variant: 'danger'
-        });
-      }
-    } finally {
-      setLoading(false);
+      console.log('🔹 Sending login request:', values)
+
+      const response = await axios.post('https://dummyjson.com/auth/sign-in', values, {
+        headers: { 'Content-Type': 'application/json' },
+      })
+
+      alert('Login success! Check console & network tab ✅')
+      navigate('/')
+    } catch (err) {
+      console.error('❌ Login failed:', err)
+      alert('Login failed ❌')
     }
-  });
-  return {
-    loading,
-    login,
-    control
-  };
-};
-export default useSignIn;
+  })
+
+  return (
+    <form className="authentication-form" onSubmit={onSubmit}>
+      {/* Email input */}
+      <TextFormInput control={control} name="email" containerClassName="mb-3" label="Email" id="email-id" placeholder="Enter your email" />
+
+      {/* Password input */}
+      <PasswordFormInput
+        control={control}
+        name="password"
+        containerClassName="mb-3"
+        placeholder="Enter your password"
+        id="password-id"
+        label={
+          <>
+            <Link to="/auth/reset-pass" className="float-end text-muted text-unline-dashed ms-1">
+              Reset password
+            </Link>
+            <label className="form-label" htmlFor="password-id">
+              Password
+            </label>
+          </>
+        }
+      />
+
+      {/* Remember me */}
+      <div className="mb-3">
+        <FormCheck label="Remember me" id="sign-in" />
+      </div>
+
+      {/* Submit button */}
+      <div className="mb-1 text-center d-grid">
+        <Button variant="primary" type="submit" disabled={isLoading}>
+          {isLoading ? 'Signing in...' : 'Sign In'}
+        </Button>
+      </div>
+    </form>
+  )
+}
+
+export default LoginForm
