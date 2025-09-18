@@ -21,4 +21,18 @@ const getEmployeeSalaryDetail = async (employeeId, filters) => {
   return response.data
 }
 
-export { getSalaryByEmployeeAndYear, getEmployeeSalaryDetail }
+const adminDownloadSalarySlip = async (employeeId, filters) => {
+  const config = await getConfig()
+  const response = await axiosInstance.get(
+    `${BASE_URL}/salary/download-salary-slip/${employeeId}`,
+    {
+      ...config,
+      params: filters,
+      responseType: 'blob',
+    }
+  )
+
+  return response
+}
+
+export { getSalaryByEmployeeAndYear, getEmployeeSalaryDetail, adminDownloadSalarySlip }
