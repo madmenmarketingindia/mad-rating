@@ -1,11 +1,11 @@
 import AppProvidersWrapper from './components/wrappers/AppProvidersWrapper'
-import configureFakeBackend from './helpers/fake-backend'
+import { Toaster } from 'react-hot-toast'
 import AppRouter from './routes/router'
 import '@/assets/scss/app.scss'
-configureFakeBackend()
 const App = () => {
   return (
     <AppProvidersWrapper>
+      <Toaster position="top-right" reverseOrder={false} />
       <AppRouter />
     </AppProvidersWrapper>
   )

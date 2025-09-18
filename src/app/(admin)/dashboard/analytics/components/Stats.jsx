@@ -1,29 +1,25 @@
-import IconifyIcon from '@/components/wrappers/IconifyIcon';
-import { Card, CardBody, CardFooter, Col, Row } from 'react-bootstrap';
-import { statData } from '../data';
-import { Link } from 'react-router-dom';
-const StatCard = ({
-  change,
-  icon,
-  stat,
-  title,
-  variant
-}) => {
-  return <Card>
+import IconifyIcon from '@/components/wrappers/IconifyIcon'
+import { Card, CardBody, CardFooter, Col, Row } from 'react-bootstrap'
+import { statData } from '../data'
+import { Link } from 'react-router-dom'
+
+const StatCard = ({ change, icon, stat, department, avgRating, variant }) => {
+  return (
+    <Card>
       <CardBody>
         <Row>
-          <Col xs={6}>
-            <div className="avatar-md bg-light bg-opacity-50 rounded flex-centered">
-              <IconifyIcon icon={icon} className="fs-32 text-success" />
-            </div>
+          <Col xs={6} className="text-start">
+            <p className="mb-0 text-truncate text-capitalize">{department}</p>
+            <h3 className="text-dark mt-2 mb-0 text-truncate">{avgRating}/5</h3>
           </Col>
-          <Col xs={6} className="text-end">
-            <p className="text-muted mb-0 text-truncate">{title}</p>
-            <h3 className="text-dark mt-2 mb-0">{stat}</h3>
+          <Col xs={6}>
+            {/* <div className="avatar-md bg-light bg-opacity-50 rounded flex-centered">
+              <IconifyIcon icon={icon} className="fs-32 text-success" />
+            </div> */}
           </Col>
         </Row>
       </CardBody>
-      <CardFooter className="border-0 py-2 bg-light bg-opacity-50">
+      {/* <CardFooter className="border-0 py-2 bg-light bg-opacity-50">
         <div className="d-flex align-items-center justify-content-between ">
           <div>
             <span className={`text-${variant} icons-center`}>
@@ -37,23 +33,20 @@ const StatCard = ({
             View More
           </Link>
         </div>
-      </CardFooter>
-    </Card>;
-};
-const Stats = () => {
+      </CardFooter> */}
+    </Card>
+  )
+}
+const Stats = (data) => {
+  console.log('dataaa', data)
   return (
-    // <Row>
-    //   {stateData.map((stat, idx) => (
-    //     <Col md={6} xxl={12} key={idx}>
-    //       <StatCard {...stat} />
-    //     </Col>
-    //   ))}
-    // </Row>
     <Row>
-      {statData.map((stat, idx) => <Col md={6} xl={3} key={idx}>
+      {data?.data?.map((stat, idx) => (
+        <Col md={6} xl={3} key={idx}>
           <StatCard {...stat} />
-        </Col>)}
+        </Col>
+      ))}
     </Row>
-  );
-};
-export default Stats;
+  )
+}
+export default Stats

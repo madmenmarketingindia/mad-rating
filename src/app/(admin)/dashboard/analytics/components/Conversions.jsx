@@ -244,7 +244,7 @@ const Conversions = () => {
             maxHeight: 310,
             height: 'auto',
             overflow: 'hidden, scroll'
-          }}>
+             }}>
               {onlineUsers.map((user, idx) => <div className="row p-2" key={idx}>
                   <span className="col-4  fw-medium">{user.name}</span>
                   <span className="col-4 text-center fw-medium">{user.percentage}</span>

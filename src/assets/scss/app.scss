@@ -80,3 +80,41 @@
 
 // Custom React
 @import 'custom-react';
+
+
+  /* Default desktop: horizontal */
+  .step-item {
+    min-width: 90px;
+  }
+  .step-line {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    width: 100%;
+    height: 2px;
+    background-color: #dee2e6;
+    z-index: 1;
+  }
+  .step-item.active ~ .step-line {
+    background-color: #0d6efd;
+  }
+
+  /* Mobile: vertical stack */
+  @media (max-width: 768px) {
+    .d-flex.flex-wrap {
+      flex-direction: column !important;
+      align-items: flex-start !important;
+    }
+    .step-item {
+      text-align: left;
+      min-width: 100%;
+      margin-bottom: 1.5rem;
+    }
+    .step-line {
+      position: absolute;
+      left: 20px;
+      top: 40px;
+      width: 2px;
+      height: calc(100% - 40px);
+    }
+  }

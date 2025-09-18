@@ -21,7 +21,7 @@ const ProfileDropdown = () => {
       </DropdownToggle>
       <DropdownMenu>
         <DropdownHeader as="h6">Welcome Gaston!</DropdownHeader>
-        <DropdownItem as={Link} to="/apps/chat">
+        <DropdownItem as={Link} to="/profile/me">
           <IconifyIcon icon="bx:message-dots" className="text-muted fs-18 align-middle me-1" />
           <span className="align-middle">Profile</span>
         </DropdownItem>
