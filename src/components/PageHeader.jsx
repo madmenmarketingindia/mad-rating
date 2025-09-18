@@ -3,7 +3,7 @@ import IconifyIcon from '@/components/wrappers/IconifyIcon'
 
 export default function PageHeader({ title, breadcrumbItems = [], rightContent }) {
   return (
-    <div className="mb-1  pb-2">
+    <div className="mb-1">
       <Row className="align-items-center g-2">
         {/* Title */}
         <Col xs={12} md={6} className="order-1 order-md-1">

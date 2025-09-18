@@ -47,7 +47,7 @@ export default function EmployeePayrollList() {
       <PageMetaData title="Employees" />
       <PageHeader
         title="Employee Payroll"
-        breadcrumbItems={[{ label: 'Dashboard', href: '/' }, { label: 'Employee Payroll', href: '/payroll/list' }, { label: 'List' }]}
+        breadcrumbItems={[{ label: 'Dashboard', href: '/' }, { label: 'Employee Payroll List' }]}
         rightContent={
           <div className="d-flex gap-2">
             <Form.Select
@@ -107,7 +107,7 @@ export default function EmployeePayrollList() {
                       payrollByEmployees.data.map((emp) => (
                         <tr key={emp._id}>
                           <td>
-                            <div className="fw-bold">
+                            <div className="fw-bold text-capitalize">
                               {emp.firstName} {emp.lastName}
                             </div>
                             <small className="text-muted fst-italic">{emp.designation}</small>

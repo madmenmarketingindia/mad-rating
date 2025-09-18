@@ -6,8 +6,10 @@ import 'simplebar-react/dist/simplebar.min.css'
 const UpcomingBirthdayCard = ({ birthdays }) => {
   return (
     <Card className="shadow-sm mb-3">
+      <Card.Header>
+        <h5 className="card-title ">Upcoming Birthdays</h5>
+      </Card.Header>
       <Card.Body>
-        <h5 className="card-title mb-3">Upcoming Birthdays</h5>
         <SimpleBar style={{ maxHeight: 310 }}>
           {birthdays?.length > 0 ? (
             birthdays.map((user, idx) => (

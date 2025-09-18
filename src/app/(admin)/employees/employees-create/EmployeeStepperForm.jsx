@@ -6,10 +6,11 @@ import { getUsers } from '../../../../redux/features/user/userSlice'
 import Select from 'react-select'
 import { getEmployeeById, registerEmployee, updateEmployee } from '../../../../redux/features/employee/employeeSlice'
 import { toast } from 'react-hot-toast'
-import { useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 
 export default function EmployeeStepperForm() {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const { allUsers, isLoading } = useSelector((state) => state.user)
   const { getEmployeeData } = useSelector((state) => state.employee)
   const { message } = useSelector((state) => state.employee)
@@ -90,9 +91,14 @@ export default function EmployeeStepperForm() {
   const validateStep = () => {
     switch (activeStep) {
       case 0:
-        return formData.firstName && formData.lastName && formData.email && formData.phoneNumber
+        return formData.firstName && formData.lastName && formData.email && formData.phoneNumber && formData.gender
       case 1:
-        return formData.officialDetails.employeeType && formData.officialDetails.department && formData.officialDetails.designation
+        return (
+          formData.officialDetails.employeeType &&
+          formData.officialDetails.department &&
+          formData.officialDetails.designation &&
+          formData.officialDetails.joiningDate
+        )
       // case 2:
       //   return formData.bankDetails.bankName && formData.bankDetails.accountNumber && formData.bankDetails.ifscCode
       case 3:
@@ -109,11 +115,17 @@ export default function EmployeeStepperForm() {
       setLoading(true)
 
       if (employeeId) {
-        await dispatch(updateEmployee({ id: employeeId, ...formData })).unwrap()
-        toast.success('Employee updated successfully!')
+        const response = await dispatch(updateEmployee({ id: employeeId, ...formData })).unwrap()
+        if (response?.success) {
+          toast.success('Employee updated successfully!')
+          navigate(-1)
+        }
       } else {
-        await dispatch(registerEmployee(formData)).unwrap()
-        toast.success('Employee registered successfully!')
+        const response = await dispatch(registerEmployee(formData)).unwrap()
+        if (response?.success) {
+          toast.success('Employee registered successfully!')
+          navigate(-1)
+        }
       }
 
       // Reset form after creation (optional, for updates you may not reset)
@@ -193,7 +205,6 @@ export default function EmployeeStepperForm() {
 
   return (
     <>
-      <PageMetaData title="Create Employee" />
       <Row>
         <Col>
           <Card>
@@ -278,14 +289,14 @@ export default function EmployeeStepperForm() {
                     </Col>
                     <Col md={6} className="mb-3">
                       <Form.Label>Phone *</Form.Label>
-                      <Form.Control name="phoneNumber" value={formData.phoneNumber} onChange={(e) => handleChange(e)} />
+                      <Form.Control type="tel" name="phoneNumber" value={formData.phoneNumber} maxLength={10} onChange={handleChange} />
                     </Col>
                     <Col md={6} className="mb-3">
                       <Form.Label>Date of Birth</Form.Label>
                       <Form.Control type="date" name="dateOfBirth" value={formData.dateOfBirth} onChange={(e) => handleChange(e)} />
                     </Col>
                     <Col md={6} className="mb-3">
-                      <Form.Label>Gender</Form.Label>
+                      <Form.Label>Gender *</Form.Label>
                       <Form.Select name="gender" value={formData.gender} onChange={(e) => handleChange(e)}>
                         <option value="">Select</option>
                         <option>Male</option>
@@ -391,7 +402,7 @@ export default function EmployeeStepperForm() {
                     </Col>
 
                     <Col md={6} className="mb-3">
-                      <Form.Label>Joining Date</Form.Label>
+                      <Form.Label>Joining Date *</Form.Label>
                       <Form.Control
                         type="date"
                         name="joiningDate"
@@ -486,7 +497,7 @@ export default function EmployeeStepperForm() {
                       <Form.Control type="number" name="deductions" value={formData.salary.deductions} onChange={(e) => handleChange(e, 'salary')} />
                     </Col>
                     <Col md={6} className="mb-3">
-                      <Form.Label>Total CTC *</Form.Label>
+                      <Form.Label>Total Salary *</Form.Label>
                       <Form.Control type="number" name="ctc" value={formData.salary.ctc} onChange={(e) => handleChange(e, 'salary')} />
                     </Col>
                   </Row>

@@ -9,18 +9,8 @@ export default function EmployeesList() {
   const navigate = useNavigate()
   return (
     <>
-      <PageMetaData title="Users" />
-      <PageHeader
-        title={'Create Employee'}
-        breadcrumbItems={[{ label: 'Dashboard', href: '/' }, { label: 'Employee List' }]}
-        rightContent={
-          <div>
-            <Button size="sm" variant="outline-success" onClick={() => navigate(-1)}>
-              Back
-            </Button>
-          </div>
-        }
-      />
+      <PageMetaData title="Create Employee" />
+     
       <Row>
         <Col>
           <Row>

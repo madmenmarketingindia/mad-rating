@@ -38,7 +38,6 @@ const StatCard = ({ change, icon, stat, department, avgRating, variant }) => {
   )
 }
 const Stats = (data) => {
-  console.log('dataaa', data)
   return (
     <Row>
       {data?.data?.map((stat, idx) => (

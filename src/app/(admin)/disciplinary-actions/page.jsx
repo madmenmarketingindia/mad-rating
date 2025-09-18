@@ -98,10 +98,6 @@ export default function DisciplinaryActionsList() {
     )
   }
 
-  // ✅ Add debug logging (remove in production)
-  console.log('disciplinaryActionsData structure:', disciplinaryActionsData)
-  console.log('Actions array:', getActionsArray())
-
   return (
     <>
       <PageMetaData title="Disciplinary Actions" />

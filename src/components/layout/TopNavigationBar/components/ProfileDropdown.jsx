@@ -1,12 +1,26 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Dropdown, DropdownDivider, DropdownHeader, DropdownItem, DropdownMenu, DropdownToggle } from 'react-bootstrap'
 import IconifyIcon from '@/components/wrappers/IconifyIcon'
 import avatar1 from '@/assets/images/users/avatar-1.jpg'
 import { useAuthContext } from '@/context/useAuthContext'
+
 const ProfileDropdown = () => {
-  const { removeSession } = useAuthContext()
+  const navigate = useNavigate()
+  const { removeSession } = useAuthContext() || {}
+
+  const handleLogout = () => {
+    // ✅ Remove user key from localStorage
+    localStorage.removeItem('user')
+
+    // ✅ If you have session context cleanup
+    if (removeSession) removeSession()
+
+    // ✅ Redirect to login
+    navigate('/auth/sign-in')
+  }
+
   return (
-    <Dropdown className="topbar-item" align={'end'}>
+    <Dropdown className="topbar-item" align="end">
       <DropdownToggle
         as="button"
         type="button"
@@ -16,18 +30,22 @@ const ProfileDropdown = () => {
         aria-haspopup="true"
         aria-expanded="false">
         <span className="d-flex align-items-center">
-          <img className="rounded-circle" width={32} height={32} src={avatar1} alt="avatar-3" />
+          <img className="rounded-circle" width={32} height={32} src={avatar1} alt="avatar" />
         </span>
       </DropdownToggle>
+
       <DropdownMenu>
         <DropdownHeader as="h6">Welcome Gaston!</DropdownHeader>
+
         <DropdownItem as={Link} to="/profile/me">
           <IconifyIcon icon="bx:message-dots" className="text-muted fs-18 align-middle me-1" />
           <span className="align-middle">Profile</span>
         </DropdownItem>
 
         <DropdownDivider className="dropdown-divider my-1" />
-        <DropdownItem as={Link} onClick={removeSession} className="text-danger" to="/auth/sign-in">
+
+        {/* ✅ Logout button */}
+        <DropdownItem onClick={handleLogout} className="text-danger">
           <IconifyIcon icon="bx:log-out" className="fs-18 align-middle me-1" />
           <span className="align-middle">Logout</span>
         </DropdownItem>
@@ -35,4 +53,5 @@ const ProfileDropdown = () => {
     </Dropdown>
   )
 }
+
 export default ProfileDropdown

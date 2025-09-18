@@ -19,24 +19,20 @@ import EmployeeYearlyRatingChart from './components/EmployeeYearlyRatingChart'
 import { employeeDisciplinaryActions, upcomingReviews } from '../../../../redux/features/disciplinaryActions/disciplinaryActionsSlice'
 import EmployeeDisciplinaryCard from './components/EmployeeDisciplinaryCard'
 import UpcomingReviewsCard from './components/UpcomingReviewsCard'
+import { getEmployees } from '../../../../redux/features/employee/employeeSlice'
+import Stats1 from './components/Stats1'
+import { getUsers } from '../../../../redux/features/user/userSlice'
 
 export default function Home() {
   const dispatch = useDispatch()
 
-  const {
-    isLoading,
-    departmentStatsData,
-    departmentRatingData,
-    upcomingBirthday,
-    upcomingWorkAnniversary,
-    empMonthlyRating,
-    yearlyRatings,
-  
-  } = useSelector((state) => state.dashboard)
+  const { isLoading, departmentStatsData, departmentRatingData, upcomingBirthday, upcomingWorkAnniversary, empMonthlyRating, yearlyRatings } =
+    useSelector((state) => state.dashboard)
 
   const { employeeDisciplinaryActionsData, upcomingReviewsData } = useSelector((state) => state.disciplinaryActions)
+  const { allEmployee } = useSelector((state) => state.employee)
+  const { allUsers } = useSelector((state) => state.user)
 
-  // ✅ Get user role
   const user = JSON.parse(localStorage.getItem('user') || '{}')
   const role = user?.data?.user?.role || 'Employee'
 
@@ -45,6 +41,8 @@ export default function Home() {
       dispatch(departmentStats())
       dispatch(departmentRating())
       dispatch(upcomingReviews())
+      dispatch(getEmployees())
+      dispatch(getUsers())
     }
 
     dispatch(employeeUpcomingBirthday())
@@ -54,15 +52,28 @@ export default function Home() {
     dispatch(employeeDisciplinaryActions())
   }, [dispatch, role])
 
-  console.log('upcomingReviewsData', upcomingReviewsData)
-
   return (
     <>
       <PageMetaData title="Analytics" />
 
       {role === 'Admin' || role === 'Hr' ? (
         <>
-          <Stats data={departmentStatsData?.data} />
+          <div className="mb-4">
+            <h4 className="mb-3">Overview</h4>
+            <Row className="g-3">
+              <Col lg={3}>
+                <Stats1 data={allUsers?.data} title="Total Users" />
+              </Col>
+              <Col lg={3}>
+                <Stats1 data={allEmployee?.data} title="Total Employees" />
+              </Col>
+            </Row>
+          </div>
+
+          <div className="mb-4">
+            <h4 className="mb-3">Department Statistics</h4>
+            <Stats data={departmentStatsData?.data} />
+          </div>
 
           <Row>
             <Col>

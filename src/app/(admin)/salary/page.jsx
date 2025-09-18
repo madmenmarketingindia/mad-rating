@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react'
-import { CardBody, Col, Row, Card, Spinner, Table, Form, Button } from 'react-bootstrap'
+import { CardBody, Col, Row, Card, Spinner, Table, Form, Button, CardHeader } from 'react-bootstrap'
 import PageMetaData from '@/components/PageTitle'
 import { useDispatch, useSelector } from 'react-redux'
 import PageHeader from '../../../components/PageHeader'
 import { salaryByEmployeeAndYear } from '../../../redux/features/salary/salarySlice'
-import { useSearchParams, Link } from 'react-router-dom'
+import { useSearchParams, Link, useNavigate } from 'react-router-dom'
 
 export default function EmployeeSalaryList() {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const { isLoading, salaryByEmployee } = useSelector((state) => state.salary)
   const [searchParams] = useSearchParams()
   const employeeId = searchParams.get('employeeId')
@@ -31,20 +32,30 @@ export default function EmployeeSalaryList() {
     <>
       <PageMetaData title="Employee Salary" />
       <PageHeader
-        title="Employee Salary"
-        breadcrumbItems={[{ label: 'Dashboard', href: '/' }, { label: 'Employee Payroll', href: '/payroll/list' }, { label: 'Employee Salary' }]}
+        title="Employee Salary Details"
+        breadcrumbItems={[
+          { label: 'Dashboard', href: '/' },
+          { label: 'Employee Payroll List', href: '/employee-payroll/list' },
+          { label: 'Employee Salary Details' },
+        ]}
         rightContent={
-          <Form.Select
-            size="sm"
-            style={{ maxWidth: 120 }}
-            value={filters.year}
-            onChange={(e) => setFilters((prev) => ({ ...prev, year: Number(e.target.value) }))}>
-            {years.map((y) => (
-              <option key={y} value={y}>
-                {y}
-              </option>
-            ))}
-          </Form.Select>
+          <div className="d-flex gap-2">
+            <Form.Select
+              size="sm"
+              style={{ maxWidth: 120 }}
+              value={filters.year}
+              onChange={(e) => setFilters((prev) => ({ ...prev, year: Number(e.target.value) }))}>
+              {years.map((y) => (
+                <option key={y} value={y}>
+                  {y}
+                </option>
+              ))}
+            </Form.Select>
+
+            <Button size="sm" variant="outline-secondary" onClick={() => navigate(-1)}>
+              Back
+            </Button>
+          </div>
         }
       />
 
@@ -70,12 +81,14 @@ export default function EmployeeSalaryList() {
             {/* Left side Salary Summary */}
             <Col md={4}>
               <Card className="mb-3">
-                <CardBody>
+                <CardHeader>
                   <h5>Salary Summary</h5>
+                </CardHeader>
+                <CardBody>
                   <Table borderless size="sm">
                     <tbody>
                       <tr>
-                        <td>Total CTC:</td>
+                        <td>Total salary:</td>
                         <td className="fw-bold">{employee.totalCTC.toFixed(2)}</td>
                       </tr>
                       <tr>
@@ -95,13 +108,15 @@ export default function EmployeeSalaryList() {
             {/* Right side Month-wise list */}
             <Col md={8}>
               <Card>
-                <CardBody>
+                <CardHeader>
                   <h5>Monthly Breakdown</h5>
+                </CardHeader>
+                <CardBody>
                   <Table hover responsive>
                     <thead>
                       <tr>
                         <th>Month</th>
-                        <th>Base Salary</th>
+                        <th>Salary</th>
                         <th>Net Pay</th>
                         <th>Status</th>
                         <th></th>
