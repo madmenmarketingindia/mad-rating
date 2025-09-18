@@ -210,8 +210,6 @@ export default function UsersList() {
           </Button>
         </Modal.Footer>
       </Modal>
-
-      {/* {isLoading && <Loader text="Loading..." size="sm" />} */}
     </>
   )
 }
