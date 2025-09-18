@@ -165,7 +165,6 @@ export default function DisciplinaryActionsForm() {
         rightContent={
           <div className="d-flex gap-2">
             <Button as={Link} to="/disciplinary-actions/list" size="sm" variant="secondary">
-              <IconifyIcon icon="mdi:arrow-left" className="me-1" />
               Back
             </Button>
           </div>
@@ -259,20 +258,17 @@ export default function DisciplinaryActionsForm() {
             {/* Submit Buttons */}
             <Col xs={12}>
               <div className="d-flex justify-content-end gap-2 pt-3 border-top">
-                <Button as={Link} to="/disciplinary-actions/list" variant="secondary">
+                <Button as={Link} to="/disciplinary-actions/list" variant="secondary" size="sm">
                   Cancel
                 </Button>
-                <Button type="submit" variant="primary" disabled={isLoading}>
+                <Button type="submit" variant="primary" size="sm" disabled={isLoading}>
                   {isLoading ? (
                     <>
                       <Spinner size="sm" animation="border" className="me-2" />
                       {actionId ? 'Updating...' : 'Creating...'}
                     </>
                   ) : (
-                    <>
-                      <IconifyIcon icon={actionId ? 'mdi:content-save' : 'mdi:plus'} className="me-2" />
-                      {actionId ? 'Update Action' : 'Create Action'}
-                    </>
+                    <>{actionId ? 'Update Action' : 'Create Action'}</>
                   )}
                 </Button>
               </div>
