@@ -4,7 +4,7 @@ import PageMetaData from '@/components/PageTitle'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import PageHeader from '../../../../components/PageHeader'
-import { employeeSalaryDetail } from '../../../../redux/features/salary/salarySlice'
+import { downloadSalarySlip, employeeSalaryDetail } from '../../../../redux/features/salary/salarySlice'
 
 export default function EmployeeSalaryDetailPage() {
   const dispatch = useDispatch()
@@ -24,6 +24,27 @@ export default function EmployeeSalaryDetailPage() {
 
   const data = salaryDetailed?.data
 
+  const handleDownload = async () => {
+    try {
+      const resultAction = await dispatch(downloadSalarySlip({ employeeId, month, year }))
+
+      if (downloadSalarySlip.fulfilled.match(resultAction)) {
+        const blob = resultAction.payload
+        const url = window.URL.createObjectURL(new Blob([blob]))
+        const link = document.createElement('a')
+        link.href = url
+        link.setAttribute('download', `SalarySlip-${data?.name}-${month}-${year}.pdf`)
+        document.body.appendChild(link)
+        link.click()
+        link.remove()
+      } else {
+        alert('Failed to download salary slip')
+      }
+    } catch (err) {
+      console.error('Download error:', err)
+    }
+  }
+
   return (
     <>
       <PageMetaData title="Salary Slip download" />
@@ -37,7 +58,7 @@ export default function EmployeeSalaryDetailPage() {
         ]}
         rightContent={
           <div className="d-flex gap-2">
-            <Button size="sm" variant="success">
+            <Button size="sm" variant="success" onClick={() => handleDownload()}>
               Download Salary Slip
             </Button>
             <Button size="sm" variant="outline-secondary" onClick={() => navigate(-1)}>

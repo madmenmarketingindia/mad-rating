@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { getEmployeeSalaryDetail, getSalaryByEmployeeAndYear } from './salaryService'
+import { adminDownloadSalarySlip, getEmployeeSalaryDetail, getSalaryByEmployeeAndYear } from './salaryService'
 
 const initialState = {
   isAuthenticated: false,
@@ -9,6 +9,7 @@ const initialState = {
   message: '',
   salaryByEmployee: {},
   salaryDetailed: {},
+  salarySlipDownload: {},
 }
 
 const removeUserFromStorage = () => {
@@ -51,6 +52,16 @@ export const employeeSalaryDetail = createAsyncThunk('salary/details', async ({ 
     return response
   } catch (error) {
     const message = error.response?.data?.message || error.message || 'Fetch EmployeeWise Rating Report failed'
+    return thunkAPI.rejectWithValue(message)
+  }
+})
+
+export const downloadSalarySlip = createAsyncThunk('salary/downloadSlip', async ({ employeeId, month, year }, thunkAPI) => {
+  try {
+    const response = await adminDownloadSalarySlip(employeeId, { month, year })
+    return response.data // this will be a Blob
+  } catch (error) {
+    const message = error.response?.data?.message || error.message || 'Download Salary Slip failed'
     return thunkAPI.rejectWithValue(message)
   }
 })
@@ -104,6 +115,20 @@ export const salarySlice = createSlice({
         state.isLoading = false
       })
       .addCase(employeeSalaryDetail.rejected, (state, action) => {
+        state.message = action.payload
+        state.isError = true
+        state.isLoading = false
+      })
+      .addCase(downloadSalarySlip.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(downloadSalarySlip.fulfilled, (state, action) => {
+        state.isAuthenticated = true
+        state.isSuccess = true
+        state.salarySlipDownload = action.payload
+        state.isLoading = false
+      })
+      .addCase(downloadSalarySlip.rejected, (state, action) => {
         state.message = action.payload
         state.isError = true
         state.isLoading = false
