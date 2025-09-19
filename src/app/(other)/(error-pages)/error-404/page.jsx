@@ -1,22 +1,20 @@
-import { Link } from 'react-router-dom';
-import { Card, CardBody } from 'react-bootstrap';
-import LogoBox from '@/components/LogoBox';
-import notFound from '@/assets/images/404.svg';
+import { Link } from 'react-router-dom'
+import { Card, CardBody } from 'react-bootstrap'
+import LogoBox from '@/components/LogoBox'
+import notFound from '@/assets/images/404.svg'
+import logo from '@/assets/images/logo.png'
+
 const Error404 = () => {
-  return <div className="mx-auto col-xl-6">
+  return (
+    <div className="mx-auto col-xl-6">
       <Card className="auth-card">
         <CardBody className="p-0">
-          <div className="p-4">
-            <div className="mx-auto mb-4 text-center">
-              <LogoBox textLogo={{
-              height: 24,
-              width: 110
-            }} squareLogo={{
-              className: 'me-2',
-              width: 33,
-              height: 28
-            }} containerClassName="mx-auto text-center auth-logo" />
-              <img src={notFound} height={250} alt="auth" className="mt-5 mb-3" />
+          <div className="p-2">
+            <div className="mx-auto mb-0 mt-4 text-center auth-logo">
+              <img src={logo} alt="Logo" width={'150px'} className="img-fluid" />
+            </div>
+            <div className="mx-auto mb-4 text-center flex-column">
+              <img src={notFound} height={150} alt="auth" className="mt-5 mb-3" />
               {/* <h1 className="mt-5 mb-3 fw-bold fs-60">404</h1> */}
               <h2 className="fs-22 lh-base">Page Not Found !</h2>
               <p className="text-muted mt-1 mb-4">
@@ -33,6 +31,7 @@ const Error404 = () => {
           </div>
         </CardBody>
       </Card>
-    </div>;
-};
-export default Error404;
+    </div>
+  )
+}
+export default Error404
