@@ -32,4 +32,11 @@ const getEmployeeYearlyRatings = async ({ employeeId, month, year }) => {
   return response.data
 }
 
-export { getEmployeeWiseRatingReport, createEmployeeRating, getSingleMonthRating, getRatingHistory, getEmployeeYearlyRatings }
+const getTeamsWiseRatings = async ({ month, year }) => {
+  const response = await axiosInstance.get(`${BASE_URL}/rating/team-wise-rating`, {
+    params: { month, year },
+  })
+  return response.data
+}
+
+export { getEmployeeWiseRatingReport, createEmployeeRating, getSingleMonthRating, getRatingHistory, getEmployeeYearlyRatings, getTeamsWiseRatings }

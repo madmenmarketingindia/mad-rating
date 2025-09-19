@@ -32,6 +32,9 @@ const EmployeeDashboard = lazy(() => import('@/app/(employee)/dashboard/page'))
 const DisciplinaryActionsList = lazy(() => import('@/app/(admin)/disciplinary-actions/page'))
 const DisciplinaryActionsCreate = lazy(() => import('@/app/(admin)/disciplinary-actions/disciplinary-actions-create/page'))
 
+// teams Performance
+const TeamPerformanceList = lazy(() => import('@/app/(admin)/teams-performance/page'))
+
 // Pages Routes
 const Welcome = lazy(() => import('@/app/(admin)/pages/welcome/page'))
 const ComingSoon = lazy(() => import('@/app/(other)/coming-soon/page'))
@@ -65,42 +68,42 @@ const generalRoutes = [
     path: '/users/users-list',
     name: 'Users',
     element: <UserList />,
-    roles: ['Admin', 'Employee'],
+    roles: ['Admin', 'Hr'],
   },
 
   {
     path: '/users/create-user',
     name: 'Users',
     element: <CreateUser />,
-    roles: ['Admin', 'Employee'],
+    roles: ['Admin', 'Hr'],
   },
 
   {
     path: '/employees/employees-list',
     name: 'Employees',
     element: <EmployeesList />,
-    roles: ['Admin', 'Employee'],
+    roles: ['Admin', 'Hr'],
   },
 
   {
     path: '/employees/employees-create',
     name: 'Employees',
     element: <EmployeesCreate />,
-    roles: ['Admin', 'Employee'],
+    roles: ['Admin', 'Hr'],
   },
 
   {
     path: '/employees/employees-create',
     name: 'Employees',
     element: <EmployeesCreate />,
-    roles: ['Admin', 'Employee'],
+    roles: ['Admin', 'Hr'],
   },
 
   {
     path: '/employees/employees-profile',
     name: 'Employees',
     element: <EmployeesProfile />,
-    roles: ['Admin', 'Employee'],
+    roles: ['Admin', 'Hr'],
   },
 
   {
@@ -184,6 +187,13 @@ const generalRoutes = [
     path: '/disciplinary-actions/list/create',
     name: 'disciplinaryActions',
     element: <DisciplinaryActionsCreate />,
+    roles: ['Admin', 'Hr'],
+  },
+
+  {
+    path: '/teams-performance/list',
+    name: 'disciplinaryActions',
+    element: <TeamPerformanceList />,
     roles: ['Admin', 'Hr'],
   },
 ]
