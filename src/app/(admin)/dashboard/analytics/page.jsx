@@ -22,6 +22,7 @@ import UpcomingReviewsCard from './components/UpcomingReviewsCard'
 import { getEmployees } from '../../../../redux/features/employee/employeeSlice'
 import Stats1 from './components/Stats1'
 import { getUsers } from '../../../../redux/features/user/userSlice'
+import TeamYearlyRatingChart from './components/TeamYearlyRatingChart'
 
 export default function Home() {
   const dispatch = useDispatch()
@@ -78,6 +79,12 @@ export default function Home() {
           <Row>
             <Col>
               <DepartmentRatingChart data={departmentRatingData?.data} />
+            </Col>
+          </Row>
+
+          <Row>
+            <Col lg={12}>
+              <TeamYearlyRatingChart />
             </Col>
           </Row>
 

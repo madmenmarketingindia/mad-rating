@@ -69,8 +69,9 @@ export default function EmployeeSalaryDetailPage() {
       />
 
       {isLoading ? (
-        <div className="text-center">
+        <div className="text-center py-5">
           <Spinner animation="border" />
+          <p className="mt-2 mb-0">Loading...</p>
         </div>
       ) : data ? (
         <Row>
@@ -80,8 +81,8 @@ export default function EmployeeSalaryDetailPage() {
                 {/* Employee + Company Info */}
                 <Row className="mb-3">
                   <Col md={8}>
-                    <h5 className="mb-1">{data.name}</h5>
-                    <p className="mb-1">
+                    <h5 className="mb-1 text-capitalize">{data.name}</h5>
+                    <p className="mb-1 text-capitalize">
                       <strong>Department:</strong> {data.department} | <strong>Designation:</strong> {data.designation}
                     </p>
                     <p className="mb-1">
@@ -97,7 +98,7 @@ export default function EmployeeSalaryDetailPage() {
                   </Col>
                   <Col md={4} className="text-end">
                     {/* Company Logo Placeholder */}
-                    <h4 className="fw-bold text-primary">Your Company</h4>
+                    <h4 className="fw-bold text-primary">MAD MEN MARKETING</h4>
                     <p className="mb-0">123 Business Street</p>
                     <p className="mb-0">City, State, PIN</p>
                     <p className="mb-0">Phone: +91-1234567890</p>
@@ -107,7 +108,7 @@ export default function EmployeeSalaryDetailPage() {
                 <hr />
 
                 {/* Salary Payable & Deductions */}
-                <Row>
+                <Row className='mt-2'>
                   <Col md={6}>
                     <h5>Salary Payable</h5>
                     <Table bordered size="sm" responsive>

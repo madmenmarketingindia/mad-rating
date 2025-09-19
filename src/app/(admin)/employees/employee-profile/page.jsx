@@ -33,6 +33,37 @@ export default function EmployeesProfile() {
   // Avatar initials
   const initials = `${data.firstName?.[0] || ''}${data.lastName?.[0] || ''}`.toUpperCase()
 
+  const renderStars = (rating) => {
+    const fullStars = Math.floor(rating)
+    const halfStar = rating % 1 >= 0.5
+    const emptyStars = 5 - fullStars - (halfStar ? 1 : 0)
+
+    return (
+      <>
+        {/* Full Stars */}
+        {[...Array(fullStars)].map((_, i) => (
+          <span key={`full-${i}`} className="text-warning">
+            ★
+          </span>
+        ))}
+
+        {/* Half Star (optional, you can also use a different symbol) */}
+        {halfStar && (
+          <span className="text-warning" style={{ opacity: 0.7 }}>
+            ★
+          </span>
+        )}
+
+        {/* Empty Stars but Yellow */}
+        {[...Array(emptyStars)].map((_, i) => (
+          <span key={`empty-${i}`} className="text-warning" style={{ opacity: 0.3 }}>
+            ★
+          </span>
+        ))}
+      </>
+    )
+  }
+
   return (
     <>
       <PageMetaData title="Employee Profile" />
@@ -72,12 +103,21 @@ export default function EmployeesProfile() {
                 {initials}
               </div>
               <div>
-                <h4 className="mb-0">
-                  {data.firstName} {data.lastName}
+                <h4 className="mb-0 text-capitalize">
+                  {data.firstName} {data?.lastName}
                 </h4>
-                <small className="text-muted">
+                <small className="text-muted text-capitalize">
                   {data.officialDetails?.designation} — {data.officialDetails?.department}
                 </small>
+
+                <div className="d-flex align-items-center">
+                  <Badge
+                    bg={data?.latestRating?.averageScore >= 4 ? 'success' : data?.latestRating?.averageScore >= 3 ? 'warning' : 'danger'}
+                    className="me-2">
+                    {data?.latestRating?.averageScore ?? 'N/A'}
+                  </Badge>
+                  {renderStars(data?.latestRating?.averageScore || 0)}
+                </div>
               </div>
             </div>
 
@@ -88,22 +128,22 @@ export default function EmployeesProfile() {
                 <Row>
                   <Col md={6}>
                     <p>
-                      <strong>Email:</strong> {data.email}
+                      <strong>Email:</strong> {data?.email}
                     </p>
                     <p>
-                      <strong>Phone:</strong> {data.phoneNumber}
+                      <strong>Phone:</strong> {data?.phoneNumber}
                     </p>
                     <p>
-                      <strong>DOB:</strong> {new Date(data.dateOfBirth).toLocaleDateString()}
+                      <strong>DOB:</strong> {new Date(data?.dateOfBirth).toLocaleDateString()}
                     </p>
                   </Col>
                   <Col md={6}>
                     <p>
-                      <strong>Gender:</strong> {data.gender}
+                      <strong>Gender:</strong> {data?.gender}
                     </p>
                     <p>
                       <strong>Status:</strong>{' '}
-                      <Badge bg={data.employmentStatus === 'Active' ? 'success' : 'secondary'}>{data.employmentStatus}</Badge>
+                      <Badge bg={data?.employmentStatus === 'Active' ? 'success' : 'secondary'}>{data.employmentStatus}</Badge>
                     </p>
                   </Col>
                 </Row>
@@ -117,18 +157,18 @@ export default function EmployeesProfile() {
                 <Row>
                   <Col md={6}>
                     <p>
-                      <strong>Employee Type:</strong> {data.officialDetails?.employeeType}
+                      <strong>Employee Type:</strong> {data?.officialDetails?.employeeType}
                     </p>
                     <p>
-                      <strong>Joining Date:</strong> {new Date(data.officialDetails?.joiningDate).toLocaleDateString()}
+                      <strong>Joining Date:</strong> {new Date(data?.officialDetails?.joiningDate).toLocaleDateString()}
                     </p>
                   </Col>
                   <Col md={6}>
                     <p>
-                      <strong>Residential Address:</strong> {data.residentialAddress}
+                      <strong>Residential Address:</strong> {data?.residentialAddress}
                     </p>
                     <p>
-                      <strong>Permanent Address:</strong> {data.permanentAddress}
+                      <strong>Permanent Address:</strong> {data?.permanentAddress}
                     </p>
                   </Col>
                 </Row>
@@ -143,23 +183,23 @@ export default function EmployeesProfile() {
                   <tbody>
                     <tr>
                       <td>Basic</td>
-                      <td>₹{data.salary?.basic}</td>
+                      <td>₹{data?.salary?.basic}</td>
                     </tr>
                     <tr>
                       <td>HRA</td>
-                      <td>₹{data.salary?.hra}</td>
+                      <td>₹{data?.salary?.hra}</td>
                     </tr>
                     <tr>
                       <td>CTC</td>
-                      <td>₹{data.salary?.ctc}</td>
+                      <td>₹{data?.salary?.ctc}</td>
                     </tr>
                     <tr>
                       <td>Other Allowances</td>
-                      <td>₹{data.salary?.otherAllowances}</td>
+                      <td>₹{data?.salary?.otherAllowances}</td>
                     </tr>
                     <tr>
                       <td>Deductions</td>
-                      <td>₹{data.salary?.deductions}</td>
+                      <td>₹{data?.salary?.deductions}</td>
                     </tr>
                   </tbody>
                 </Table>
@@ -173,22 +213,22 @@ export default function EmployeesProfile() {
                 <Row>
                   <Col md={6}>
                     <p>
-                      <strong>Bank Name:</strong> {data.bankDetails?.bankName || '-'}
+                      <strong>Bank Name:</strong> {data?.bankDetails?.bankName || '-'}
                     </p>
                   </Col>
                   <Col md={6}>
                     <p>
-                      <strong>Branch:</strong> {data.bankDetails?.branchName || '-'}
+                      <strong>Branch:</strong> {data?.bankDetails?.branchName || '-'}
                     </p>
                   </Col>
                   <Col md={6}>
                     <p>
-                      <strong>Account No:</strong> {data.bankDetails?.accountNumber || '-'}
+                      <strong>Account No:</strong> {data?.bankDetails?.accountNumber || '-'}
                     </p>
                   </Col>
                   <Col md={6}>
                     <p>
-                      <strong>IFSC Code:</strong> {data.bankDetails?.ifscCode || '-'}
+                      <strong>IFSC Code:</strong> {data?.bankDetails?.ifscCode || '-'}
                     </p>
                   </Col>
                 </Row>
@@ -199,17 +239,17 @@ export default function EmployeesProfile() {
             <Card className="mb-3 border-0 shadow-sm bg-light">
               <Card.Body>
                 <h6 className="fw-bold text-primary mb-3">⭐ Latest Rating</h6>
-                {data.latestRating?.averageScore ? (
+                {data?.latestRating?.averageScore ? (
                   <>
                     <p>
-                      <strong>Month:</strong> {data.latestRating.month}-{data.latestRating.year}
+                      <strong>Month:</strong> {data?.latestRating.month}-{data?.latestRating.year}
                     </p>
                     <p>
-                      <strong>Average Score:</strong> <Badge bg="info">{data.latestRating.averageScore}</Badge>
+                      <strong>Average Score:</strong> <Badge bg="info">{data?.latestRating.averageScore}</Badge>
                     </p>
                     <Table striped bordered size="sm" className="mb-0">
                       <tbody>
-                        {Object.entries(data.latestRating.categories || {}).map(([key, val]) => (
+                        {Object.entries(data?.latestRating.categories || {}).map(([key, val]) => (
                           <tr key={key}>
                             <td>{key}</td>
                             <td>{val}</td>

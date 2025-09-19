@@ -7,7 +7,7 @@ import { getDisciplinaryActions, updateDisciplinaryActionStatus } from '../../..
 import IconifyIcon from '@/components/wrappers/IconifyIcon'
 import { Link } from 'react-router-dom'
 
-export default function DisciplinaryActionsList() {
+export default function DisciplinaryActions() {
   const dispatch = useDispatch()
   const { disciplinaryActionsData, isLoading } = useSelector((state) => state.disciplinaryActions)
 
@@ -141,7 +141,7 @@ export default function DisciplinaryActionsList() {
         {isLoading ? (
           <div className="text-center py-5">
             <Spinner animation="border" />
-            <p className="mt-2 text-muted">Loading disciplinary actions...</p>
+            <p className="mt-2 mb-0">Loading...</p>
           </div>
         ) : sortedActions.length > 0 ? (
           <Table responsive bordered hover className="mb-0">
