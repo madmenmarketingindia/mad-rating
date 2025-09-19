@@ -5,6 +5,7 @@ import {
   getSingleMonthRating,
   getRatingHistory,
   getEmployeeYearlyRatings,
+  getTeamsWiseRatings,
 } from './ratingReportService'
 
 const initialState = {
@@ -12,6 +13,7 @@ const initialState = {
   createdRating: {},
   monthRating: {},
   yearlyRatings: {},
+  teamsWiseRatingsData: {},
   ratingHistory: [],
   isAuthenticated: false,
   isError: false,
@@ -91,6 +93,16 @@ export const employeeYearlyRatings = createAsyncThunk('rating/yearly-history', a
     return response
   } catch (error) {
     const message = error.response?.data?.message || error.message || 'Fetch Rating yearly Employee History  failed'
+    return thunkAPI.rejectWithValue(message)
+  }
+})
+
+export const teamsWiseRatings = createAsyncThunk('rating/get-teams-wise-ratings', async (data, thunkAPI) => {
+  try {
+    const response = await getTeamsWiseRatings(data)
+    return response
+  } catch (error) {
+    const message = error.response?.data?.message || error.message || 'Fetch Team wise Rating Employee failed'
     return thunkAPI.rejectWithValue(message)
   }
 })
@@ -187,7 +199,16 @@ export const ratingReportSlice = createSlice({
         state.yearlyRatings = action.payload
         state.isHistoryLoading = false
       })
-      .addCase(employeeYearlyRatings.rejected, (state, action) => {
+      .addCase(teamsWiseRatings.pending, (state) => {
+        state.isHistoryLoading = true
+      })
+      .addCase(teamsWiseRatings.fulfilled, (state, action) => {
+        state.isAuthenticated = true
+        state.isSuccess = true
+        state.teamsWiseRatingsData = action.payload
+        state.isHistoryLoading = false
+      })
+      .addCase(teamsWiseRatings.rejected, (state, action) => {
         state.message = action.payload
         state.isError = true
         state.isHistoryLoading = false

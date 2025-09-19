@@ -80,4 +80,15 @@ export const MENU_ITEMS = [
     url: '/disciplinary-actions/list',
     roles: ['Admin', 'Hr'],
   },
+
+  {
+    key: 'teamsPerformance',
+    icon: 'mdi:chart-line',
+    label: 'Teams Performance',
+    badge: {
+      variant: 'success',
+    },
+    url: '/teams-performance/list',
+    roles: ['Admin', 'Hr'],
+  },
 ]
