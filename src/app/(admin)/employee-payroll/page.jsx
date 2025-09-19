@@ -3,7 +3,7 @@ import { CardBody, Col, Row, Button, Card, Spinner, Table, Form } from 'react-bo
 import PageMetaData from '@/components/PageTitle'
 import { useDispatch, useSelector } from 'react-redux'
 import PageHeader from '../../../components/PageHeader'
-import { listPayrollByEmployees } from '../../../redux/features/attendancePayroll/attendancePayrollSlice'
+import { listPayrollByEmployees, upsertPayroll } from '../../../redux/features/attendancePayroll/attendancePayrollSlice'
 import { Link } from 'react-router-dom'
 
 export default function EmployeePayrollList() {
@@ -38,8 +38,14 @@ export default function EmployeePayrollList() {
     dispatch(listPayrollByEmployees(filters))
   }, [dispatch, filters.month, filters.year])
 
-  const handleStatusChange = (empId, newStatus) => {
-    console.log('Update status for:', empId, 'to:', newStatus)
+  const handleStatusChange = async (empId, newStatus, emp) => {
+    const payload = {
+      ...emp,
+      employeeId: empId,
+      status: newStatus,
+    }
+    const response = dispatch(upsertPayroll(payload))
+    dispatch(listPayrollByEmployees(filters))
   }
 
   return (
@@ -88,7 +94,7 @@ export default function EmployeePayrollList() {
               {isLoading ? (
                 <div className="text-center py-5">
                   <Spinner animation="border" />
-                  <p className="mt-2 mb-0">Loading payroll records...</p>
+                  <p className="mt-2 mb-0">Loading...</p>
                 </div>
               ) : (
                 <Table striped bordered hover responsive className="align-middle">
@@ -112,12 +118,12 @@ export default function EmployeePayrollList() {
                             </div>
                             <small className="text-muted fst-italic">{emp.designation}</small>
                           </td>
-                          <td className="text-end">{emp.salary}</td>
-                          <td className="text-center">{emp.payableDays}</td>
-                          <td className="text-end">{emp.payable}</td>
+                          <td className="text-end">{emp?.salary}</td>
+                          <td className="text-center">{emp?.payableDays}</td>
+                          <td className="text-end">{emp?.payable}</td>
                           <td className="text-center">
-                            <Form.Select size="sm" value={emp.status} onChange={(e) => handleStatusChange(emp._id, e.target.value)}>
-                              {statusOptions.map((s) => (
+                            <Form.Select size="sm" value={emp?.status} onChange={(e) => handleStatusChange(emp._id, e.target.value, emp)}>
+                              {statusOptions?.map((s) => (
                                 <option key={s} value={s}>
                                   {s}
                                 </option>

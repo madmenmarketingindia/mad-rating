@@ -6,10 +6,13 @@ import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { deleteEmployee, getEmployees } from '../../../../redux/features/employee/employeeSlice'
 import PageHeader from '../../../../components/PageHeader'
+import { Star } from '@smastrom/react-rating'
 
 export default function EmployeesList() {
   const dispatch = useDispatch()
   const { allEmployee, isLoading } = useSelector((state) => state.employee)
+
+  console.log('allEmployeeaa', allEmployee)
 
   const [search, setSearch] = useState('')
   const [sortField, setSortField] = useState('firstName')
@@ -170,6 +173,37 @@ export default function EmployeesList() {
     }
   }
 
+  const renderStars = (rating) => {
+    const fullStars = Math.floor(rating)
+    const halfStar = rating % 1 >= 0.5
+    const emptyStars = 5 - fullStars - (halfStar ? 1 : 0)
+
+    return (
+      <>
+        {/* Full Stars */}
+        {[...Array(fullStars)].map((_, i) => (
+          <span key={`full-${i}`} className="text-warning">
+            ★
+          </span>
+        ))}
+
+        {/* Half Star (optional, you can also use a different symbol) */}
+        {halfStar && (
+          <span className="text-warning" style={{ opacity: 1 }}>
+            ★
+          </span>
+        )}
+
+        {/* Empty Stars but Yellow */}
+        {[...Array(emptyStars)].map((_, i) => (
+          <span key={`empty-${i}`} className="text-warning" style={{ opacity: 0.4 }}>
+            ★
+          </span>
+        ))}
+      </>
+    )
+  }
+
   return (
     <>
       <PageMetaData title="Employees" />
@@ -213,8 +247,8 @@ export default function EmployeesList() {
               {/* Loading */}
               {isLoading ? (
                 <div className="text-center py-5">
-                  <Spinner animation="border" variant="primary" />
-                  <div className="mt-2 text-muted">Loading employees...</div>
+                  <Spinner animation="border" />
+                  <p className="mt-2 mb-0">Loading...</p>
                 </div>
               ) : (
                 <>
@@ -245,6 +279,13 @@ export default function EmployeesList() {
                             <th className="cursor-pointer user-select-none" onClick={() => handleSort('employmentStatus')}>
                               <div className="d-flex align-items-center gap-1">
                                 Status
+                                <IconifyIcon icon={getSortIcon('employmentStatus')} className="text-muted" />
+                              </div>
+                            </th>
+
+                            <th className="cursor-pointer user-select-none" onClick={() => handleSort('employmentStatus')}>
+                              <div className="d-flex align-items-center gap-1">
+                                Rating
                                 <IconifyIcon icon={getSortIcon('employmentStatus')} className="text-muted" />
                               </div>
                             </th>
@@ -293,17 +334,28 @@ export default function EmployeesList() {
                                 <td>
                                   <div className="small">
                                     <div className="mb-1">
-                                      <strong>DOB:</strong> {formatDate(emp.dateOfBirth)}
+                                      <strong>DOB:</strong> {formatDate(emp?.dateOfBirth)}
                                     </div>
                                     <div>
-                                      <strong>Joined:</strong> {formatDate(emp.officialDetails?.joiningDate)}
+                                      <strong>Joined:</strong> {formatDate(emp?.officialDetails?.joiningDate)}
                                     </div>
                                   </div>
                                 </td>
 
                                 {/* Status */}
                                 <td>
-                                  <Badge bg={emp.employmentStatus === 'Active' ? 'success' : 'secondary'}>{emp.employmentStatus}</Badge>
+                                  <Badge bg={emp?.employmentStatus === 'Active' ? 'success' : 'secondary'}>{emp?.employmentStatus}</Badge>
+                                </td>
+
+                                <td>
+                                  <div className="d-flex align-items-center">
+                                    <Badge
+                                      bg={emp?.currentMonthAvg >= 4 ? 'success' : emp?.currentMonthAvg >= 3 ? 'warning' : 'danger'}
+                                      className="me-2">
+                                      {emp?.currentMonthAvg ?? 'N/A'}
+                                    </Badge>
+                                    {renderStars(emp?.currentMonthAvg || 0)}
+                                  </div>
                                 </td>
 
                                 {/* Actions */}
@@ -370,39 +422,40 @@ export default function EmployeesList() {
                   {/* Mobile Cards */}
                   <div className="d-lg-none">
                     {paginatedEmployees?.length > 0 ? (
-                      paginatedEmployees.map((emp) => (
+                      paginatedEmployees?.map((emp) => (
                         <Card key={emp._id} className="mb-3 border-0 shadow-sm">
                           <CardBody className="p-3">
-                            <div className="d-flex justify-content-between align-items-start mb-2">
+                            {/* Header: Avatar + Name + Status + Menu */}
+                            <div className="d-flex justify-content-between align-items-start mb-3">
                               <div className="d-flex align-items-center gap-2">
+                                {/* Initials Avatar */}
                                 <div
-                                  className="bg-primary rounded-circle d-flex align-items-center justify-content-center text-white"
+                                  className="bg-primary rounded-circle d-flex align-items-center justify-content-center text-white text-capitalize"
                                   style={{ width: '35px', height: '35px', fontSize: '12px', fontWeight: 'bold' }}>
-                                  {emp.firstName?.charAt(0)?.toUpperCase()}
-                                  {emp.lastName?.charAt(0)?.toUpperCase()}
+                                  {emp?.firstName?.charAt(0)?.toUpperCase()}
+                                  {emp?.lastName?.charAt(0)?.toUpperCase()}
                                 </div>
+
                                 <div>
                                   <div className="fw-semibold">
-                                    {emp.firstName} {emp.lastName}
+                                    {emp?.firstName} {emp?.lastName}
                                   </div>
-                                  <Badge bg={emp.employmentStatus === 'Active' ? 'success' : 'secondary'} className="small">
-                                    {emp.employmentStatus}
+                                  <Badge bg={emp?.employmentStatus === 'Active' ? 'success' : 'secondary'} className="small">
+                                    {emp?.employmentStatus}
                                   </Badge>
                                 </div>
                               </div>
-                              <div className="position-static">
+
+                              {/* Dropdown Menu */}
+                              <div className="position-relative d-inline-block">
                                 <Button variant="light" size="sm" onClick={(e) => toggleDropdown(emp._id, e)} className="border-0">
                                   <IconifyIcon icon="mdi:dots-vertical" />
                                 </Button>
 
                                 {dropdownOpen === emp._id && (
                                   <div
-                                    className="dropdown-menu show position-fixed bg-white border rounded shadow-sm py-1"
-                                    style={{
-                                      right: '20px',
-                                      zIndex: 9999,
-                                      minWidth: '150px',
-                                    }}>
+                                    className="dropdown-menu show bg-white border rounded shadow-sm py-1"
+                                    style={{ right: 0, zIndex: 9999, minWidth: '150px' }}>
                                     <Link
                                       to={`/employees/employees-profile?employeeId=${emp._id}`}
                                       className="dropdown-item text-decoration-none d-flex align-items-center gap-2 px-3 py-2"
@@ -431,6 +484,15 @@ export default function EmployeesList() {
                               </div>
                             </div>
 
+                            {/* Rating Section */}
+                            <div className="d-flex align-items-center mb-3">
+                              <Badge bg={emp?.currentMonthAvg >= 4 ? 'success' : emp?.currentMonthAvg >= 3 ? 'warning' : 'danger'} className="me-2">
+                                {emp?.currentMonthAvg ?? 'N/A'}
+                              </Badge>
+                              {renderStars(emp?.currentMonthAvg || 0)}
+                            </div>
+
+                            {/* Employee Details */}
                             <div className="row g-2 small">
                               <div className="col-12">
                                 <div className="text-muted text-capitalize">
@@ -439,19 +501,19 @@ export default function EmployeesList() {
                               </div>
                               <div className="col-6">
                                 <div className="text-muted">Email:</div>
-                                <div className="small">{emp.email}</div>
+                                <div className="small">{emp?.email}</div>
                               </div>
                               <div className="col-6">
                                 <div className="text-muted">Phone:</div>
-                                <div className="small">{emp.phoneNumber || '-'}</div>
+                                <div className="small">{emp?.phoneNumber || '-'}</div>
                               </div>
                               <div className="col-6">
                                 <div className="text-muted">DOB:</div>
-                                <div className="small">{formatDate(emp.dateOfBirth)}</div>
+                                <div className="small">{formatDate(emp?.dateOfBirth)}</div>
                               </div>
                               <div className="col-6">
                                 <div className="text-muted">Joined:</div>
-                                <div className="small">{formatDate(emp.officialDetails?.joiningDate)}</div>
+                                <div className="small">{formatDate(emp?.officialDetails?.joiningDate)}</div>
                               </div>
                             </div>
                           </CardBody>

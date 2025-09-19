@@ -1,16 +1,24 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { getEmployeeWiseRatingReport, createEmployeeRating, getSingleMonthRating, getRatingHistory } from './ratingReportService'
+import {
+  getEmployeeWiseRatingReport,
+  createEmployeeRating,
+  getSingleMonthRating,
+  getRatingHistory,
+  getEmployeeYearlyRatings,
+} from './ratingReportService'
 
 const initialState = {
   ratingReport: null,
   createdRating: {},
   monthRating: {},
+  yearlyRatings: {},
   ratingHistory: [],
   isAuthenticated: false,
   isError: false,
   isSuccess: false,
   isLoading: false,
   message: '',
+  isHistoryLoading: false,
 }
 
 const removeUserFromStorage = () => {
@@ -73,6 +81,16 @@ export const employeeRatingHistory = createAsyncThunk('rating/history', async (e
     return response
   } catch (error) {
     const message = error.response?.data?.message || error.message || 'Fetch Rating Employee History  failed'
+    return thunkAPI.rejectWithValue(message)
+  }
+})
+
+export const employeeYearlyRatings = createAsyncThunk('rating/yearly-history', async (employeeId, thunkAPI) => {
+  try {
+    const response = await getEmployeeYearlyRatings(employeeId)
+    return response
+  } catch (error) {
+    const message = error.response?.data?.message || error.message || 'Fetch Rating yearly Employee History  failed'
     return thunkAPI.rejectWithValue(message)
   }
 })
@@ -147,18 +165,32 @@ export const ratingReportSlice = createSlice({
         state.isLoading = false
       })
       .addCase(employeeRatingHistory.pending, (state) => {
-        state.isLoading = true
+        state.isHistoryLoading = true
       })
       .addCase(employeeRatingHistory.fulfilled, (state, action) => {
         state.isAuthenticated = true
         state.isSuccess = true
         state.ratingHistory = action.payload
-        state.isLoading = false
+        state.isHistoryLoading = false
       })
       .addCase(employeeRatingHistory.rejected, (state, action) => {
         state.message = action.payload
         state.isError = true
-        state.isLoading = false
+        state.isHistoryLoading = false
+      })
+      .addCase(employeeYearlyRatings.pending, (state) => {
+        state.isHistoryLoading = true
+      })
+      .addCase(employeeYearlyRatings.fulfilled, (state, action) => {
+        state.isAuthenticated = true
+        state.isSuccess = true
+        state.yearlyRatings = action.payload
+        state.isHistoryLoading = false
+      })
+      .addCase(employeeYearlyRatings.rejected, (state, action) => {
+        state.message = action.payload
+        state.isError = true
+        state.isHistoryLoading = false
       })
   },
 })

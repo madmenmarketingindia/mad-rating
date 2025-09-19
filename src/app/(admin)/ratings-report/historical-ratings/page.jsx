@@ -2,12 +2,18 @@ import { useEffect, useState } from 'react'
 import { CardBody, Col, Row, Card, Form, Button, Spinner, Table, Pagination } from 'react-bootstrap'
 import PageMetaData from '@/components/PageTitle'
 import { useDispatch, useSelector } from 'react-redux'
-import { createRating, employeeRatingHistory, singleMonthRating } from '../../../../redux/features/ratingReport/ratingReportSlice'
+import {
+  createRating,
+  employeeRatingHistory,
+  employeeYearlyRatings,
+  singleMonthRating,
+} from '../../../../redux/features/ratingReport/ratingReportSlice'
 import { Link, useSearchParams } from 'react-router-dom'
 import PageHeader from '../../../../components/PageHeader'
 import { getEmployees } from '../../../../redux/features/employee/employeeSlice'
+import EmployeeYearlyRatingChart from './EmployeeYearlyRatingChart'
 
-export default function RatingsReports() {
+export default function HistoricalRating() {
   const dispatch = useDispatch()
   const currentDate = new Date()
   const currentMonth = currentDate.getMonth() + 1
@@ -16,7 +22,7 @@ export default function RatingsReports() {
   const queryEmployeeId = searchParams.get('employeeId')
   const emName = searchParams.get('employeeName')
 
-  const { monthRating, ratingHistory, isLoading , isHistoryLoading} = useSelector((state) => state.ratingReport)
+  const { monthRating, ratingHistory, isLoading, isHistoryLoading } = useSelector((state) => state.ratingReport)
   const { allEmployee } = useSelector((state) => state.employee)
 
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(queryEmployeeId || '')
@@ -150,18 +156,15 @@ export default function RatingsReports() {
   const endIndex = startIndex + itemsPerPage
   const currentItems = filteredData?.slice(startIndex, endIndex)
 
-  // --------------------------
-  // Render
-  // --------------------------
   return (
     <>
       <PageMetaData title="Employee Ratings" />
       <PageHeader
-        title={queryEmployeeId ? 'Edit Employee Rating' : 'Create Employee Rating'}
+        title={'Employee Rating History'}
         breadcrumbItems={[
           { label: 'Dashboard', href: '/' },
           { label: 'Employee Rating List', href: '/ratings-reports/list' },
-          { label: queryEmployeeId ? 'Edit Rating' : 'Create Rating' },
+          { label: 'Employee Rating History' },
         ]}
         rightContent={
           <div className="d-flex gap-2">
@@ -177,84 +180,6 @@ export default function RatingsReports() {
               </Form.Select>
             )}
 
-            {/* Month */}
-            <Form.Select size="sm" name="month" value={formFilters.month} onChange={handleFormFilterChange} style={{ maxWidth: '150px' }}>
-              {Array.from({ length: 12 }, (_, i) => (
-                <option key={i + 1} value={i + 1}>
-                  {new Date(0, i).toLocaleString('default', {
-                    month: 'long',
-                  })}
-                </option>
-              ))}
-            </Form.Select>
-
-            {/* Year */}
-            <Form.Select size="sm" name="year" value={formFilters.year} onChange={handleFormFilterChange} style={{ maxWidth: '120px' }}>
-              {Array.from({ length: 10 }, (_, i) => {
-                const year = currentYear - 5 + i
-                return (
-                  <option key={year} value={year}>
-                    {year}
-                  </option>
-                )
-              })}
-            </Form.Select>
-
-            <Button as={Link} to="/ratings-reports/list" size="sm" variant="secondary">
-              Back
-            </Button>
-          </div>
-        }
-      />
-
-      <>
-        <Row>
-          <Col>
-            <Card>
-              <CardBody>
-                <Row className="align-items-center mb-3">
-                  <h5 className='text-capitalize'>
-                    {employeeName?.firstName || employeeName?.lastName
-                      ? `${employeeName?.firstName || ''} ${employeeName?.lastName || ''}`
-                      : emName
-                        ? emName
-                        : 'No data is available for this employee'}
-                  </h5>
-                </Row>
-
-                {isLoading ? (
-                  <div className="text-center py-5">
-                    <Spinner animation="border" />
-                  </div>
-                ) : (
-                  <>
-                    <Row>
-                      {Object.keys(categories).map((cat) => (
-                        <Col md={6} key={cat} className="mb-2">
-                          <Form.Group>
-                            <Form.Label className="text-capitalize">{cat}</Form.Label>
-                            <Form.Control type="number" step="0.1" min="0" max="5" name={cat} value={categories[cat]} onChange={handleRatingChange} />
-                          </Form.Group>
-                        </Col>
-                      ))}
-                    </Row>
-
-                    <div className="mt-3 d-flex justify-content-end">
-                      <Button onClick={handleSubmit}>{queryEmployeeId ? 'Update Rating' : 'Save Rating'}</Button>
-                    </div>
-                  </>
-                )}
-              </CardBody>
-            </Card>
-          </Col>
-        </Row>
-
-        {/* Rating History */}
-        <Row className="align-items-center mb-3 mt-4">
-          <Col>
-            <h5 className="mb-0">Rating History</h5>
-          </Col>
-          <Col className="text-end">
             <Form className="d-flex gap-2 justify-content-end">
               <Form.Select size="sm" name="month" value={historyFilters?.month} onChange={handleHistoryFilterChange}>
                 <option value="">All Months</option>
@@ -278,6 +203,19 @@ export default function RatingsReports() {
                 })}
               </Form.Select>
             </Form>
+
+            <Button as={Link} to="/ratings-reports/list" size="sm" variant="secondary">
+              Back
+            </Button>
+          </div>
+        }
+      />
+
+      <>
+        {/* Rating History */}
+        <Row className="align-items-center mb-3 mt-4">
+          <Col>
+            <h5 className="mb-0 text-capitalize">{employeeName}</h5>
           </Col>
         </Row>
 
@@ -342,6 +280,13 @@ export default function RatingsReports() {
                 )}
               </CardBody>
             </Card>
+          </Col>
+        </Row>
+
+        <Row>
+          <Col>
+            {/* Yearly rating graph for the selected employee */}
+            {selectedEmployeeId && <EmployeeYearlyRatingChart employeeId={selectedEmployeeId} />}
           </Col>
         </Row>
       </>

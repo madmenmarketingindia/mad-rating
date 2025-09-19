@@ -132,7 +132,7 @@ export default function DisciplinaryActionsForm() {
         // Navigate after short delay
         setTimeout(() => {
           navigate('/disciplinary-actions/list')
-        }, 1000)
+        }, )
       }
     } catch (error) {
       console.error('Save failed:', error)

@@ -19,6 +19,13 @@ const ProfileDropdown = () => {
     navigate('/auth/sign-in')
   }
 
+  const user = JSON.parse(localStorage.getItem('user') || '{}')
+  const username = user?.data?.user?.username || 'Guest'
+
+  const isEmployee = user?.data?.user?.employeeId || false
+
+  console.log('isEmployee', isEmployee)
+
   return (
     <Dropdown className="topbar-item" align="end">
       <DropdownToggle
@@ -35,12 +42,16 @@ const ProfileDropdown = () => {
       </DropdownToggle>
 
       <DropdownMenu>
-        <DropdownHeader as="h6">Welcome Gaston!</DropdownHeader>
+        <DropdownHeader as="h6">
+          Welcome <span className="text-capitalize">{username}</span>
+        </DropdownHeader>
 
-        <DropdownItem as={Link} to="/profile/me">
-          <IconifyIcon icon="bx:message-dots" className="text-muted fs-18 align-middle me-1" />
-          <span className="align-middle">Profile</span>
-        </DropdownItem>
+        {isEmployee && (
+          <DropdownItem as={Link} to="/profile/me">
+            <IconifyIcon icon="bx:message-dots" className="text-muted fs-18 align-middle me-1" />
+            <span className="align-middle">Profile</span>
+          </DropdownItem>
+        )}
 
         <DropdownDivider className="dropdown-divider my-1" />
 

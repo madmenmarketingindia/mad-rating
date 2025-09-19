@@ -9,7 +9,8 @@ import PageHeader from '@/components/PageHeader'
 
 export default function RatingsReports() {
   const dispatch = useDispatch()
-  const { allEmployeeRating, isLoading } = useSelector((state) => state.ratingReport)
+  const { allEmployeeRating, isLoading } = useSelector((state) => state.ratingReport);
+  
 
   const [filters, setFilters] = useState({
     name: '',
@@ -148,13 +149,16 @@ export default function RatingsReports() {
                     {isLoading ? (
                       <tr>
                         <td colSpan="10" className="text-center">
-                          <Spinner animation="border" size="sm" /> Loading...
+                          <div className="text-center py-5">
+                            <Spinner animation="border" />
+                            <p className="mt-2 mb-0">Loading...</p>
+                          </div>
                         </td>
                       </tr>
                     ) : paginatedData?.length > 0 ? (
                       paginatedData.map((rating) => (
                         <tr key={rating._id}>
-                          <td>
+                          <td className="text-capitalize">
                             {rating?.employeeId?.firstName} {rating?.employeeId?.lastName}
                           </td>
                           <td>{rating?.categories.ethics}</td>
@@ -167,7 +171,7 @@ export default function RatingsReports() {
                           <td>
                             <strong>{rating?.averageScore}</strong>
                           </td>
-                          <td>
+                          <td className="d-flex gap-2">
                             <Button
                               as={Link}
                               to={`/ratings-report/add-rating?employeeId=${rating?.employeeId?._id}&employeeName=${encodeURIComponent(
@@ -175,7 +179,17 @@ export default function RatingsReports() {
                               )}`}
                               variant="outline-primary"
                               size="sm">
-                              <IconifyIcon icon="bx:edit" className="me-1" /> Edit
+                              Edit
+                            </Button>
+
+                            <Button
+                              as={Link}
+                              to={`/ratings-report/history?employeeId=${rating?.employeeId?._id}&employeeName=${encodeURIComponent(
+                                `${rating?.employeeId?.firstName || ''} ${rating?.employeeId?.lastName || ''}`,
+                              )}`}
+                              variant="outline-primary"
+                              size="sm">
+                              View
                             </Button>
                           </td>
                         </tr>

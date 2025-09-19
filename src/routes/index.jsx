@@ -17,6 +17,7 @@ const Profile = lazy(() => import('@/app/(admin)/profile/page'))
 //rating and report
 const RatingsReports = lazy(() => import('@/app/(admin)/ratings-report/page'))
 const RatingsEdits = lazy(() => import('@/app/(admin)/ratings-report/add-rating/page'))
+const HistoricalRatings = lazy(() => import('@/app/(admin)/ratings-report/historical-ratings/page'))
 
 // employee payroll
 const EmployeePayrollList = lazy(() => import('@/app/(admin)/employee-payroll/page'))
@@ -106,42 +107,49 @@ const generalRoutes = [
     path: '/ratings-reports/list',
     name: 'RatingsReports',
     element: <RatingsReports />,
-    roles: ['Admin', 'Employee'],
+    roles: ['Admin', 'Hr'],
   },
 
   {
     path: '/ratings-report/add-rating',
     name: 'RatingsReports',
     element: <RatingsEdits />,
-    roles: ['Admin', 'Employee'],
+    roles: ['Admin', 'Hr'],
+  },
+
+  {
+    path: '/ratings-report/history',
+    name: 'RatingsReports',
+    element: <HistoricalRatings />,
+    roles: ['Admin', 'Hr'],
   },
 
   {
     path: '/employee-payroll/list',
     name: 'employeePayroll',
     element: <EmployeePayrollList />,
-    roles: ['Admin', 'Employee'],
+    roles: ['Admin', 'Hr'],
   },
 
   {
     path: '/employee-payroll/create-payroll',
     name: 'employeePayroll',
     element: <UpsertEmployeePayroll />,
-    roles: ['Admin', 'Employee'],
+    roles: ['Admin', 'Hr'],
   },
 
   {
     path: '/employee-payroll/salary-list',
     name: 'employeeSalary',
     element: <EmployeeSalaryList />,
-    roles: ['Admin', 'Employee'],
+    roles: ['Admin', 'Hr'],
   },
 
   {
     path: '/employee-payroll/salary-list/detail',
     name: 'employeeSalary',
     element: <EmployeeSalaryDetail />,
-    roles: ['Admin', 'Employee'],
+    roles: ['Admin', 'Hr'],
   },
 
   {

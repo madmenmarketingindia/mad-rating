@@ -60,8 +60,9 @@ export default function EmployeeSalaryList() {
       />
 
       {isLoading ? (
-        <div className="text-center">
+        <div className="text-center py-5">
           <Spinner animation="border" />
+          <p className="mt-2 mb-0">Loading...</p>
         </div>
       ) : employee ? (
         <>

@@ -6,6 +6,7 @@ import {
   getEmployeeUpcomingBirthday,
   getEmployeeWorkAnniversary,
   getEmployeeYearlyRatings,
+  getTeamYearlyRatings,
 } from './dashboardService'
 
 const initialState = {
@@ -16,6 +17,7 @@ const initialState = {
   upcomingWorkAnniversary: {},
   empMonthlyRating: {},
   yearlyRatings: {},
+  teamYearlyRatingsData: {},
   isAuthenticated: false,
   isError: false,
   isSuccess: false,
@@ -100,6 +102,16 @@ export const employeeMonthlyRating = createAsyncThunk('d/employee-rating', async
 export const employeeYearlyRatings = createAsyncThunk('d/yearly-employee-rating', async (userId_, thunkAPI) => {
   try {
     const response = await getEmployeeYearlyRatings()
+    return response
+  } catch (error) {
+    const message = error.response?.data?.message || error.message || 'EmployeeWork anniversary failed'
+    return thunkAPI.rejectWithValue(message)
+  }
+})
+
+export const teamYearlyRatings = createAsyncThunk('d/team-yearly-employee-rating', async (year, thunkAPI) => {
+  try {
+    const response = await getTeamYearlyRatings(year)
     return response
   } catch (error) {
     const message = error.response?.data?.message || error.message || 'EmployeeWork anniversary failed'
@@ -212,6 +224,20 @@ export const dashboardSlice = createSlice({
         state.isLoading = false
       })
       .addCase(employeeYearlyRatings.rejected, (state, action) => {
+        state.message = action.payload
+        state.isError = true
+        state.isLoading = false
+      })
+      .addCase(teamYearlyRatings.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(teamYearlyRatings.fulfilled, (state, action) => {
+        state.isAuthenticated = true
+        state.isSuccess = true
+        state.teamYearlyRatingsData = action.payload
+        state.isLoading = false
+      })
+      .addCase(teamYearlyRatings.rejected, (state, action) => {
         state.message = action.payload
         state.isError = true
         state.isLoading = false

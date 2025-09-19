@@ -39,6 +39,13 @@ const getEmployeeYearlyRatings = async () => {
   return response.data
 }
 
+const getTeamYearlyRatings = async (year) => {
+  const config = await getConfig()
+
+  const response = await axiosInstance.get(`${BASE_URL}/d/team-yearly-ratings?year=${year}`, config)
+  return response.data
+}
+
 export {
   getDepartmentStats,
   getDepartmentRating,
@@ -46,4 +53,5 @@ export {
   getEmployeeWorkAnniversary,
   getEmployeeMonthlyRating,
   getEmployeeYearlyRatings,
+  getTeamYearlyRatings,
 }
