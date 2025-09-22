@@ -46,4 +46,26 @@ const userStatus = async (userData) => {
   return response.data
 }
 
-export { createEmployee, editEmployee, getEmployeeProfile, deleteEmployeeByAdmin, getAllEmployee, getEmployee, userStatus }
+const getAllDepartments = async () => {
+  const config = await getConfig()
+  const response = await axiosInstance.get(`${BASE_URL}/employee/all-department`, config)
+  return response.data
+}
+
+const getEmployeesByDepartment = async (departmentName) => {
+  const config = await getConfig()
+  const response = await axiosInstance.get(`${BASE_URL}/employee/by-department?department=${departmentName}`, config)
+  return response.data
+}
+
+export {
+  createEmployee,
+  editEmployee,
+  getEmployeeProfile,
+  deleteEmployeeByAdmin,
+  getAllEmployee,
+  getEmployee,
+  userStatus,
+  getAllDepartments,
+  getEmployeesByDepartment,
+}

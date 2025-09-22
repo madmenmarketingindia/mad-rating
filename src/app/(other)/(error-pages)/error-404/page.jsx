@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom'
 import { Card, CardBody } from 'react-bootstrap'
-import LogoBox from '@/components/LogoBox'
 import notFound from '@/assets/images/404.svg'
 import logo from '@/assets/images/logo.png'
 

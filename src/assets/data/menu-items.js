@@ -91,4 +91,15 @@ export const MENU_ITEMS = [
     url: '/teams-performance/list',
     roles: ['Admin', 'Hr'],
   },
+
+  {
+    key: 'teamsIncentive',
+    icon: 'mdi:finance',
+    label: 'Teams Incentive',
+    badge: {
+      variant: 'success',
+    },
+    url: '/teams-incentive/list',
+    roles: ['Admin', 'Hr'],
+  },
 ]

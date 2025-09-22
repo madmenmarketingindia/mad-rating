@@ -200,18 +200,18 @@ export const ratingReportSlice = createSlice({
         state.isHistoryLoading = false
       })
       .addCase(teamsWiseRatings.pending, (state) => {
-        state.isHistoryLoading = true
+        state.isLoading = true
       })
       .addCase(teamsWiseRatings.fulfilled, (state, action) => {
         state.isAuthenticated = true
         state.isSuccess = true
         state.teamsWiseRatingsData = action.payload
-        state.isHistoryLoading = false
+        state.isLoading = false
       })
       .addCase(teamsWiseRatings.rejected, (state, action) => {
         state.message = action.payload
         state.isError = true
-        state.isHistoryLoading = false
+        state.isLoading = false
       })
   },
 })

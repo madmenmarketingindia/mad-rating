@@ -24,8 +24,6 @@ const ProfileDropdown = () => {
 
   const isEmployee = user?.data?.user?.employeeId || false
 
-  console.log('isEmployee', isEmployee)
-
   return (
     <Dropdown className="topbar-item" align="end">
       <DropdownToggle

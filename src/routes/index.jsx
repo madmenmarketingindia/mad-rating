@@ -35,6 +35,11 @@ const DisciplinaryActionsCreate = lazy(() => import('@/app/(admin)/disciplinary-
 // teams Performance
 const TeamPerformanceList = lazy(() => import('@/app/(admin)/teams-performance/page'))
 
+// team incentive
+const TeamIncentive = lazy(() => import('@/app/(admin)/teams-incentive/page'))
+const AddTeamIncentive = lazy(() => import('@/app/(admin)/teams-incentive/add-incentive/page'))
+
+
 // Pages Routes
 const Welcome = lazy(() => import('@/app/(admin)/pages/welcome/page'))
 const ComingSoon = lazy(() => import('@/app/(other)/coming-soon/page'))
@@ -192,8 +197,22 @@ const generalRoutes = [
 
   {
     path: '/teams-performance/list',
-    name: 'disciplinaryActions',
+    name: 'teamsPerformance',
     element: <TeamPerformanceList />,
+    roles: ['Admin', 'Hr'],
+  },
+
+  {
+    path: '/teams-incentive/list',
+    name: 'teamsIncentive',
+    element: <TeamIncentive />,
+    roles: ['Admin', 'Hr'],
+  },
+
+  {
+    path: '/teams-incentive/list/create',
+    name: 'teamsIncentive',
+    element: <AddTeamIncentive />,
     roles: ['Admin', 'Hr'],
   },
 ]
