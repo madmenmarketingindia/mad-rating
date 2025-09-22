@@ -88,24 +88,24 @@ export default function Home() {
             </Col>
           </Row>
 
-          <Row className='mt-4'>
+          <Row className="mt-4">
             <h4 className="mb-3">Work Milestone</h4>
             {upcomingBirthday?.data?.length > 0 && (
               <Col lg={4} md={6} className="mb-3">
-                <UpcomingBirthdayCard birthdays={upcomingBirthday.data} />
+                <UpcomingBirthdayCard birthdays={upcomingBirthday?.data} />
               </Col>
             )}
             {upcomingWorkAnniversary?.data?.length > 0 && (
               <Col lg={4} md={6} className="mb-3">
-                <UpcomingAnniversaryCard anniversaries={upcomingWorkAnniversary.data} />
+                <UpcomingAnniversaryCard anniversaries={upcomingWorkAnniversary?.data} />
               </Col>
             )}
 
-            {/* {upcomingReviewsData?.data?.length > 0 && ( */}
+            {upcomingReviewsData?.data?.length > 0 && (
               <Col lg={4} md={6} className="mb-3">
-                <UpcomingReviewsCard reviews={upcomingReviewsData.data} />
+                <UpcomingReviewsCard reviews={upcomingReviewsData?.data} />
               </Col>
-            {/* )} */}
+            )}
           </Row>
         </>
       ) : (
