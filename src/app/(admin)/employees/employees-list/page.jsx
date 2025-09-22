@@ -6,13 +6,10 @@ import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { deleteEmployee, getEmployees } from '../../../../redux/features/employee/employeeSlice'
 import PageHeader from '../../../../components/PageHeader'
-import { Star } from '@smastrom/react-rating'
 
 export default function EmployeesList() {
   const dispatch = useDispatch()
   const { allEmployee, isLoading } = useSelector((state) => state.employee)
-
-  console.log('allEmployeeaa', allEmployee)
 
   const [search, setSearch] = useState('')
   const [sortField, setSortField] = useState('firstName')

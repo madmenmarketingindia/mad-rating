@@ -3,9 +3,11 @@ import {
   createEmployee,
   deleteEmployeeByAdmin,
   editEmployee,
+  getAllDepartments,
   getAllEmployee,
   getEmployee,
   getEmployeeProfile,
+  getEmployeesByDepartment,
   userStatus,
 } from './employeeService.js'
 
@@ -21,6 +23,8 @@ const initialState = {
   updatedEmployee: {},
   deleteEmployee: {},
   getEmProfile: {},
+  allDepartmentsData: {},
+  employeesByDepartmentData: {},
 }
 
 // Helper functions to handle localStorage safely
@@ -125,6 +129,26 @@ export const employeeProfile = createAsyncThunk('employee/profile', async (emplo
     return await getEmployeeProfile(employeeId)
   } catch (error) {
     return thunkAPI.rejectWithValue(error.message)
+  }
+})
+
+export const allDepartments = createAsyncThunk('employee/get-all-department', async (_, thunkAPI) => {
+  try {
+    const response = await getAllDepartments()
+    return response
+  } catch (error) {
+    const message = error.response?.data?.message || error.message || 'Fetch Employee failed'
+    return thunkAPI.rejectWithValue(message)
+  }
+})
+
+export const employeesByDepartment = createAsyncThunk('employee/get-all-employee-department', async (departmentName, thunkAPI) => {
+  try {
+    const response = await getEmployeesByDepartment(departmentName)
+    return response
+  } catch (error) {
+    const message = error.response?.data?.message || error.message || 'Fetch Employee failed'
+    return thunkAPI.rejectWithValue(message)
   }
 })
 
@@ -248,6 +272,34 @@ export const employeeSlice = createSlice({
         state.isLoading = false
       })
       .addCase(employeeProfile.rejected, (state, action) => {
+        state.message = action.payload
+        state.isError = true
+        state.isLoading = false
+      })
+      .addCase(allDepartments.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(allDepartments.fulfilled, (state, action) => {
+        state.isAuthenticated = true
+        state.isSuccess = true
+        state.allDepartmentsData = action.payload
+        state.isLoading = false
+      })
+      .addCase(allDepartments.rejected, (state, action) => {
+        state.message = action.payload
+        state.isError = true
+        state.isLoading = false
+      })
+      .addCase(employeesByDepartment.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(employeesByDepartment.fulfilled, (state, action) => {
+        state.isAuthenticated = true
+        state.isSuccess = true
+        state.employeesByDepartmentData = action.payload
+        state.isLoading = false
+      })
+      .addCase(employeesByDepartment.rejected, (state, action) => {
         state.message = action.payload
         state.isError = true
         state.isLoading = false

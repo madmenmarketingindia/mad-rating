@@ -5,7 +5,7 @@ import 'simplebar-react/dist/simplebar.min.css'
 
 const UpcomingAnniversaryCard = ({ anniversaries }) => {
   return (
-    <Card className="shadow-sm mb-3">
+    <Card className="shadow-sm mb-3 h-100">
       <Card.Header>
         <h5 className="card-title">Upcoming Work Anniversaries</h5>
       </Card.Header>

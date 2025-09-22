@@ -6,6 +6,7 @@ import attendancePayrollReducer from './features/attendancePayroll/attendancePay
 import salaryReducer from './features/salary/salarySlice'
 import dashboardReducer from './features/dashboard/dashboardSlice'
 import disciplinaryActionsReducer from './features/disciplinaryActions/disciplinaryActionsSlice'
+import teamIncentiveReducer from './features/teamIncentive/teamIncentiveSlice'
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
     salary: salaryReducer,
     dashboard: dashboardReducer,
     disciplinaryActions: disciplinaryActionsReducer,
+    teamIncentive: teamIncentiveReducer,
   },
 })
 
