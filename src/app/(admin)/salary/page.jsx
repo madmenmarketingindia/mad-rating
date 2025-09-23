@@ -128,11 +128,11 @@ export default function EmployeeSalaryList() {
                     </thead>
                     <tbody>
                       {employee.months?.length > 0 ? (
-                        employee.months.map((m, idx) => (
+                        employee?.months?.map((m, idx) => (
                           <tr key={idx}>
                             <td>{new Date(m.year, m.month - 1).toLocaleString('default', { month: 'long' })}</td>
-                            <td>{m.baseSalary.toFixed(2)}</td>
-                            <td>{m.salary?.toFixed(2)}</td>
+                            <td>{m?.baseSalary.toFixed(2)}</td>
+                            <td>{m?.salary?.toFixed(2)}</td>
                             <td>{m.netPay?.toFixed(2)}</td>
                             <td>{m?.status}</td>
                             <td>
