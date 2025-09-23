@@ -4,17 +4,14 @@ import AdminLayout from '@/layouts/AdminLayout'
 import { appRoutes, authRoutes } from '@/routes/index'
 
 const AppRouter = (props) => {
-  // ✅ Get user from localStorage
   const user = JSON.parse(localStorage.getItem('user') || 'null')
   const isAuthenticated = true
   const role = user?.data?.user?.role || 'Employee'
 
-  // ✅ Filter app routes based on role
   const allowedAppRoutes = (appRoutes || []).filter((route) => !route.roles || route.roles.includes(role))
 
   return (
     <Routes>
-      {/* Auth routes */}
       {(authRoutes || []).map((route, idx) => (
         <Route key={idx + route.name} path={route.path} element={<AuthLayout {...props}>{route.element}</AuthLayout>} />
       ))}
