@@ -24,7 +24,7 @@ const EmployeePayrollList = lazy(() => import('@/app/(admin)/employee-payroll/pa
 const UpsertEmployeePayroll = lazy(() => import('@/app/(admin)/employee-payroll/create-payroll/page'))
 
 // employee salary
-const EmployeeSalaryList = lazy(() => import('@/app/(admin)//salary/page'))
+const EmployeeSalaryList = lazy(() => import('@/app/(admin)/salary/page'))
 const EmployeeSalaryDetail = lazy(() => import('@/app/(admin)//salary/salary-details/page'))
 const EmployeeDashboard = lazy(() => import('@/app/(employee)/dashboard/page'))
 
@@ -97,12 +97,12 @@ const generalRoutes = [
     roles: ['Admin', 'Hr'],
   },
 
-  {
-    path: '/employees/employees-create',
-    name: 'Employees',
-    element: <EmployeesCreate />,
-    roles: ['Admin', 'Hr'],
-  },
+  // {
+  //   path: '/employees/employees-create',
+  //   name: 'Employees',
+  //   element: <EmployeesCreate />,
+  //   roles: ['Admin', 'Hr'],
+  // },
 
   {
     path: '/employees/employees-profile',
@@ -273,4 +273,4 @@ export const authRoutes = [
     element: <ComingSoon />,
   },
 ]
-export const appRoutes = [...initialRoutes, ...generalRoutes, , ...customRoutes, ...authRoutes]
+export const appRoutes = [...initialRoutes, ...generalRoutes, ...customRoutes, ...authRoutes]

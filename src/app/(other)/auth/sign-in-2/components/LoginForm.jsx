@@ -43,6 +43,7 @@ const LoginForm = () => {
       if (result?.success) {
         toast.success('Login Successful')
         navigate('/dashboard/analytics')
+        window.location.reload()
       } else {
         toast.error(result?.message || 'Login failed')
       }
