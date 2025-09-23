@@ -114,9 +114,9 @@ export default function EmployeePayrollList() {
                         <tr key={emp._id}>
                           <td>
                             <div className="fw-bold text-capitalize">
-                              {emp.firstName} {emp.lastName}
+                              {emp?.firstName} {emp?.lastName}
                             </div>
-                            <small className="text-muted fst-italic">{emp.designation}</small>
+                            <small className="text-muted fst-italic">{emp?.designation}</small>
                           </td>
                           <td className="text-end">{emp?.salary}</td>
                           <td className="text-center">{emp?.payableDays}</td>
