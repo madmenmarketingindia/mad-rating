@@ -158,10 +158,10 @@ export default function TeamIncentive() {
                           <td>{teamIncentive.month}</td>
                           <td>{teamIncentive.year}</td>
                           <td>
-                            <Button variant="outline-none" size="lg" className="me-2" onClick={() => handleEdit(teamIncentive._id)}>
+                            <Button variant="outline-none" size="lg" className="me-0 p-2" onClick={() => handleEdit(teamIncentive._id)}>
                               <IconifyIcon icon="bx:edit" />
                             </Button>
-                            <Button variant="outline-none" size="lg" onClick={() => confirmDelete(teamIncentive._id)}>
+                            <Button variant="outline-none" size="lg" className="p-2" onClick={() => confirmDelete(teamIncentive._id)}>
                               <IconifyIcon icon="bx:trash" />
                             </Button>
                           </td>

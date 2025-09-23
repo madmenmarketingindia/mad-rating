@@ -193,8 +193,8 @@ export default function DisciplinaryActions() {
                   <td>{new Date(action.date).toLocaleDateString()}</td>
                   <td>
                     <Dropdown>
-                      <Dropdown.Toggle variant="light" size="sm" className="border-0">
-                        <IconifyIcon icon="mdi:dots-vertical" />
+                      <Dropdown.Toggle variant="light" size="sm" bsPrefix="btn btn-light btn-sm" as="button" className="border-0">
+                        <IconifyIcon icon="mdi:dots-vertical" className="" />
                       </Dropdown.Toggle>
                       <Dropdown.Menu>
                         <Dropdown.Item as={Link} to={`/disciplinary-actions/list/create?actionId=${action._id}`}>

@@ -20,12 +20,14 @@ export default function PageHeader({ title, breadcrumbItems = [], rightContent }
         {/* Breadcrumb */}
         {breadcrumbItems.length > 0 && (
           <Col xs={12} className="order-2 order-md-3">
-            <Breadcrumb className="flex-wrap mb-0">
+            <Breadcrumb className="flex-wrap mb-0 d-flex align-items-center">
               {breadcrumbItems.map((item, idx) => (
-                <Breadcrumb.Item key={idx} active={idx === breadcrumbItems.length - 1} href={item.href || '#'} className="d-flex align-items-center">
-                  {item.label}
-                  {idx !== breadcrumbItems.length - 1 && <IconifyIcon icon="mdi:chevron-right" className="mx-1 text-muted" width={16} />}
-                </Breadcrumb.Item>
+                <span key={idx} className="d-flex align-items-center">
+                  <Breadcrumb.Item active={idx === breadcrumbItems.length - 1} href={item.href || '#'}>
+                    {item.label}
+                  </Breadcrumb.Item>
+                  {idx !== breadcrumbItems.length - 1 && <IconifyIcon icon="mdi:chevron-right" width={16} height={16} className="mx-1 text-muted" />}
+                </span>
               ))}
             </Breadcrumb>
           </Col>
