@@ -108,7 +108,7 @@ export default function EmployeeSalaryDetailPage() {
                 <hr />
 
                 {/* Salary Payable & Deductions */}
-                <Row className='mt-2'>
+                <Row className="mt-2">
                   <Col md={6}>
                     <h5>Salary Payable</h5>
                     <Table bordered size="sm" responsive>
@@ -127,7 +127,7 @@ export default function EmployeeSalaryDetailPage() {
                         </tr>
                         <tr>
                           <td>Conveyance</td>
-                          <td>{data.salaryDetails?.conveyance?.toFixed(2) || 0}</td>
+                          <td>{data.salaryDetails?.conveyanceAllowance?.toFixed(2) || 0}</td>
                         </tr>
                         <tr>
                           <td>Special Allowance</td>
@@ -136,6 +136,18 @@ export default function EmployeeSalaryDetailPage() {
                         <tr>
                           <td>Others</td>
                           <td>{data.salaryDetails?.others?.toFixed(2) || 0}</td>
+                        </tr>
+
+                        <tr>
+                          <td>Reimbursement</td>
+                          <td>{data.salaryDetails?.reimbursement?.toFixed(2) || 0}</td>
+                        </tr>
+
+                        <tr>
+                          <td>Incentive</td>
+                          <td>
+                            {data.salaryDetails?.incentiveAmount?.toFixed(2) || 0} ({data?.rating?.averageScore}%)
+                          </td>
                         </tr>
                       </tbody>
                     </Table>

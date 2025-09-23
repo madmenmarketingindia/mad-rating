@@ -21,6 +21,10 @@ export default function UpsertEmployeePayroll() {
   })
 
   const [formData, setFormData] = useState({
+    basicSalary: 0,
+    conveyanceAllowance: 0,
+    hra: 0,
+    medicalAllowance: 0,
     salary: 0,
     totalDays: 30,
     leaves: 0,
@@ -67,6 +71,10 @@ export default function UpsertEmployeePayroll() {
   useEffect(() => {
     if (employeePayrollData?.data) {
       setFormData({
+        basicSalary: employeePayrollData.data.basicSalary || 0,
+        hra: employeePayrollData.data.hra || 0,
+        medicalAllowance: employeePayrollData.data.medicalAllowance || 0,
+        conveyanceAllowance: employeePayrollData.data.conveyanceAllowance || 0,
         salary: employeePayrollData.data.salary || 0,
         totalDays: employeePayrollData.data.totalDays || 30,
         leaves: employeePayrollData.data.leaves || 0,
@@ -178,10 +186,35 @@ export default function UpsertEmployeePayroll() {
               ) : (
                 <Form>
                   <Row className="mb-2">
+                    <h4 className="mb-3">Basic Information</h4>
+                    <Col md={4}>
+                      <Form.Label>Basic Salary</Form.Label>
+                      <Form.Control type="number" name="salary" value={formData.basicSalary} onChange={handleChange} />
+                    </Col>
+
+                    <Col md={4} className="mb-2">
+                      <Form.Label>HRA</Form.Label>
+                      <Form.Control type="number" name="salary" value={formData.hra} onChange={handleChange} />
+                    </Col>
+
+                    <Col md={4} className="mb-2">
+                      <Form.Label>Medical Allowance</Form.Label>
+                      <Form.Control type="number" name="salary" value={formData.medicalAllowance} onChange={handleChange} />
+                    </Col>
+
+                    <Col md={4} className="mb-2">
+                      <Form.Label>Conveyance Allowance</Form.Label>
+                      <Form.Control type="number" name="salary" value={formData.conveyanceAllowance} onChange={handleChange} />
+                    </Col>
+
                     <Col md={4}>
                       <Form.Label>Salary</Form.Label>
                       <Form.Control type="number" name="salary" value={formData.salary} onChange={handleChange} />
                     </Col>
+                  </Row>
+
+                  <Row>
+                    <h4 className="mb-3 mt-3">Leave Information</h4>
                     <Col md={4}>
                       <Form.Label>Total Days</Form.Label>
                       <Form.Control type="number" name="totalDays" value={formData.totalDays} onChange={handleChange} />
@@ -268,9 +301,12 @@ export default function UpsertEmployeePayroll() {
                       <tr>
                         <th>Employee</th>
                         <th>Department</th>
-                        <th>Designation</th>
                         <th>Year</th>
                         <th>Month</th>
+                        <th>Basic Salary</th>
+                        <th>Hra</th>
+                        <th>Medical Allowance</th>
+                        <th>Conveyance Allowance</th>
                         <th>Total Days</th>
                         <th>Present Days</th>
                         <th>Absent Days</th>
@@ -290,9 +326,12 @@ export default function UpsertEmployeePayroll() {
                           {employeePayrollData.data.firstName} {employeePayrollData.data.lastName}
                         </td>
                         <td>{employeePayrollData.data.department}</td>
-                        <td>{employeePayrollData.data.designation}</td>
                         <td>{employeePayrollData.data.year}</td>
                         <td>{months?.find((m) => m?.value === employeePayrollData.data.month)?.label}</td>
+                        <td>{employeePayrollData.data.basicSalary}</td>
+                        <td>{employeePayrollData.data.hra}</td>
+                        <td>{employeePayrollData.data.medicalAllowance}</td>
+                        <td>{employeePayrollData.data.conveyanceAllowance}</td>
                         <td>{employeePayrollData.data.totalDays}</td>
                         <td>{employeePayrollData.data.totalDays - (employeePayrollData.data.absent + employeePayrollData.data.leaves)}</td>
                         <td>{employeePayrollData.data.absent}</td>

@@ -16,7 +16,7 @@ export default function RatingsReports() {
   const queryEmployeeId = searchParams.get('employeeId')
   const emName = searchParams.get('employeeName')
 
-  const { monthRating, ratingHistory, isLoading , isHistoryLoading} = useSelector((state) => state.ratingReport)
+  const { monthRating, ratingHistory, isLoading, isHistoryLoading } = useSelector((state) => state.ratingReport)
   const { allEmployee } = useSelector((state) => state.employee)
 
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(queryEmployeeId || '')
@@ -43,6 +43,18 @@ export default function RatingsReports() {
   }, [dispatch, allEmployee])
 
   // fetch single month rating when employee changes
+  // useEffect(() => {
+  //   if (selectedEmployeeId) {
+  //     dispatch(
+  //       singleMonthRating({
+  //         employeeId: selectedEmployeeId,
+  //         month: formFilters.month,
+  //         year: formFilters.year,
+  //       }),
+  //     )
+  //   }
+  // }, [dispatch, selectedEmployeeId, formFilters.month, formFilters.year])
+
   useEffect(() => {
     if (selectedEmployeeId) {
       dispatch(
@@ -52,6 +64,17 @@ export default function RatingsReports() {
           year: formFilters.year,
         }),
       )
+    } else {
+      // reset categories when no employee is selected
+      setCategories({
+        ethics: '',
+        discipline: '',
+        workEthics: '',
+        output: '',
+        teamPlay: '',
+        leadership: '',
+        extraMile: '',
+      })
     }
   }, [dispatch, selectedEmployeeId, formFilters.month, formFilters.year])
 
@@ -213,7 +236,7 @@ export default function RatingsReports() {
             <Card>
               <CardBody>
                 <Row className="align-items-center mb-3">
-                  <h5 className='text-capitalize'>
+                  <h5 className="text-capitalize">
                     {employeeName?.firstName || employeeName?.lastName
                       ? `${employeeName?.firstName || ''} ${employeeName?.lastName || ''}`
                       : emName

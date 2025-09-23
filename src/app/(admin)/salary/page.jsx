@@ -28,6 +28,8 @@ export default function EmployeeSalaryList() {
 
   const employee = salaryByEmployee?.data
 
+  console.log('employeessss', employee)
+
   return (
     <>
       <PageMetaData title="Employee Salary" />
@@ -80,7 +82,7 @@ export default function EmployeeSalaryList() {
 
           <Row>
             {/* Left side Salary Summary */}
-            <Col md={4}>
+            {/* <Col md={4}>
               <Card className="mb-3">
                 <CardHeader>
                   <h5>Salary Summary</h5>
@@ -104,10 +106,10 @@ export default function EmployeeSalaryList() {
                   </Table>
                 </CardBody>
               </Card>
-            </Col>
+            </Col> */}
 
             {/* Right side Month-wise list */}
-            <Col md={8}>
+            <Col md={12}>
               <Card>
                 <CardHeader>
                   <h5>Monthly Breakdown</h5>
@@ -117,6 +119,7 @@ export default function EmployeeSalaryList() {
                     <thead>
                       <tr>
                         <th>Month</th>
+                        <th>Basic Salary</th>
                         <th>Salary</th>
                         <th>Net Pay</th>
                         <th>Status</th>
@@ -129,8 +132,9 @@ export default function EmployeeSalaryList() {
                           <tr key={idx}>
                             <td>{new Date(m.year, m.month - 1).toLocaleString('default', { month: 'long' })}</td>
                             <td>{m.baseSalary.toFixed(2)}</td>
-                            <td>{m.netPay.toFixed(2)}</td>
-                            <td>{m.status}</td>
+                            <td>{m.salary?.toFixed(2)}</td>
+                            <td>{m.netPay?.toFixed(2)}</td>
+                            <td>{m?.status}</td>
                             <td>
                               <Link to={`/employee-payroll/salary-list/detail?employeeId=${employee.employeeId}&month=${m.month}&year=${m.year}`}>
                                 <Button size="sm" variant="outline-primary">
