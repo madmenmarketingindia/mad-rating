@@ -8,52 +8,52 @@ import { getEmployeeById, registerEmployee, updateEmployee } from '../../../../r
 import { toast } from 'react-hot-toast'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 
-export default function EmployeeStepperForm() {
+export default function EmployeeStepperForm({ employeeId }) {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const { allUsers, isLoading } = useSelector((state) => state.user)
   const { getEmployeeData } = useSelector((state) => state.employee)
   const { message } = useSelector((state) => state.employee)
   const [loading, setLoading] = useState(false)
-  const [searchParams] = useSearchParams()
-  const employeeId = searchParams.get('employeeId')
+  const [isFormReady, setIsFormReady] = useState(false)
+
   const editEmployee = getEmployeeData.data
   const [activeStep, setActiveStep] = useState(0)
   const [formData, setFormData] = useState({
-    userId: editEmployee?.userId || '',
-    firstName: editEmployee?.firstName || '',
-    lastName: editEmployee?.lastName || '',
-    email: editEmployee?.email || '',
-    phoneNumber: editEmployee?.phoneNumber || '',
-    dateOfBirth: editEmployee?.dateOfBirth || '',
-    gender: editEmployee?.gender || '',
-    residentialAddress: editEmployee?.residentialAddress || '',
-    permanentAddress: editEmployee?.permanentAddress || '',
+    userId: '',
+    firstName: '',
+    lastName: '',
+    email: '',
+    phoneNumber: '',
+    dateOfBirth: '',
+    gender: '',
+    residentialAddress: '',
+    permanentAddress: '',
 
     officialDetails: {
-      employeeType: editEmployee?.officialDetails?.employeeType || '',
-      department: editEmployee?.officialDetails?.department || '',
-      designation: editEmployee?.officialDetails?.designation || '',
-      joiningDate: editEmployee?.officialDetails?.joiningDate || '',
+      employeeType: '',
+      department: '',
+      designation: '',
+      joiningDate: '',
     },
 
     bankDetails: {
-      bankName: editEmployee?.bankDetails?.bankName || '',
-      branchName: editEmployee?.bankDetails?.branchName || '',
-      accountHolderName: editEmployee?.bankDetails?.accountHolderName || '',
-      accountNumber: editEmployee?.bankDetails?.accountNumber || '',
-      ifscCode: editEmployee?.bankDetails?.ifscCode || '',
-      accountType: editEmployee?.bankDetails?.accountType || 'Savings',
+      bankName: '',
+      branchName: '',
+      accountHolderName: '',
+      accountNumber: '',
+      ifscCode: '',
+      accountType: 'Savings',
     },
 
     salary: {
-      basic: editEmployee?.salary.basic || 0,
-      hra: editEmployee?.salary.hra || 0,
-      medicalAllowance: editEmployee?.salary?.medicalAllowance || 0,
-      conveyanceAllowance: editEmployee?.salary?.conveyanceAllowance || 0,
-      otherAllowances: editEmployee?.salary?.otherAllowances || 0,
-      deductions: editEmployee?.salary?.deductions || 0,
-      ctc: editEmployee?.salary?.ctc || 0,
+      basic: 0,
+      hra: 0,
+      medicalAllowance: 0,
+      conveyanceAllowance: 0,
+      otherAllowances: 0,
+      deductions: 0,
+      ctc: 0,
     },
 
     employmentStatus: 'Active',
@@ -80,6 +80,7 @@ export default function EmployeeStepperForm() {
   const steps = [{ title: 'Personal Details' }, { title: 'Official Details' }, { title: 'Bank Information' }, { title: 'Salary Information' }]
 
   const handleNext = () => {
+    console.log('Next clicked, current step:', activeStep)
     if (activeStep < steps.length - 1) setActiveStep((prev) => prev + 1)
   }
 
@@ -99,8 +100,8 @@ export default function EmployeeStepperForm() {
           formData.officialDetails.designation &&
           formData.officialDetails.joiningDate
         )
-      // case 2:
-      //   return formData.bankDetails.bankName && formData.bankDetails.accountNumber && formData.bankDetails.ifscCode
+      case 2:
+        return true
       case 3:
         return formData.salary.basic > 0 && formData.salary.ctc > 0
       default:
@@ -108,9 +109,30 @@ export default function EmployeeStepperForm() {
     }
   }
 
-  // --- Submit ---
-  const handleSubmit = async (e) => {
+  // --- Prevent Form Auto Submit ---
+  const handleFormSubmit = (e) => {
     e.preventDefault()
+    console.log('Form submit prevented - this should only log, not actually submit')
+    // This prevents the form from auto-submitting
+    // Actual submission happens through handleActualSubmit
+  }
+
+  // --- Actual Submit Handler ---
+  const handleActualSubmit = async () => {
+    console.log('Actual submit triggered', { activeStep, isEditMode: !!employeeId })
+
+    // Only allow submission on the last step
+    if (activeStep !== steps.length - 1) {
+      console.log('Not on last step, preventing submission')
+      return
+    }
+
+    // Prevent submission if form isn't ready
+    if (!isFormReady) {
+      console.log('Form not ready, preventing submission')
+      return
+    }
+
     try {
       setLoading(true)
 
@@ -129,7 +151,7 @@ export default function EmployeeStepperForm() {
       }
 
       // Reset form after creation (optional, for updates you may not reset)
-      if (!formData.employeeId) {
+      if (!employeeId) {
         setFormData({
           userId: '',
           firstName: '',
@@ -187,6 +209,9 @@ export default function EmployeeStepperForm() {
   useEffect(() => {
     if (employeeId) {
       dispatch(getEmployeeById(employeeId))
+    } else {
+      // For create mode, mark form as ready immediately
+      setIsFormReady(true)
     }
   }, [dispatch, employeeId])
 
@@ -202,6 +227,87 @@ export default function EmployeeStepperForm() {
     Servicing: ['Service Manager', 'Service Engineer', 'Support Executive'],
     Production: ['Production Manager', 'Supervisor', 'Worker', 'Technician'],
   }
+
+  const capitalizeDepartment = (dept) => {
+    switch (dept.toLowerCase()) {
+      case 'hr':
+        return 'Hr'
+      case 'sales':
+        return 'Sales'
+      case 'marketing':
+        return 'Marketing'
+      case 'finance':
+        return 'Finance'
+      case 'tech':
+      case 'it':
+        return 'Tech'
+      case 'operations':
+        return 'Operations'
+      case 'madly':
+        return 'Madly'
+      case 'design':
+        return 'Design'
+      case 'servicing':
+        return 'Servicing'
+      case 'production':
+        return 'Production'
+      default:
+        return dept
+    }
+  }
+
+  useEffect(() => {
+    console.log('Edit employee effect triggered:', { editEmployee: !!editEmployee, employeeId })
+    if (editEmployee && employeeId) {
+      setFormData({
+        userId: editEmployee?.userId || '',
+        firstName: editEmployee?.firstName || '',
+        lastName: editEmployee?.lastName || '',
+        email: editEmployee?.email || '',
+        phoneNumber: editEmployee?.phoneNumber || '',
+        dateOfBirth: editEmployee?.dateOfBirth?.split('T')[0] || '',
+        gender: editEmployee?.gender || '',
+        residentialAddress: editEmployee?.residentialAddress || '',
+        permanentAddress: editEmployee?.permanentAddress || '',
+
+        officialDetails: {
+          employeeType: editEmployee?.officialDetails?.employeeType || '',
+          department: editEmployee?.officialDetails?.department ? capitalizeDepartment(editEmployee.officialDetails.department.trim()) : '',
+          designation: editEmployee?.officialDetails?.designation || '',
+          joiningDate: editEmployee?.officialDetails?.joiningDate
+            ? editEmployee.officialDetails.joiningDate.split('T')[0] // format for <input type="date" />
+            : '',
+        },
+
+        bankDetails: {
+          bankName: editEmployee?.bankDetails?.bankName || '',
+          branchName: editEmployee?.bankDetails?.branchName || '',
+          accountHolderName: editEmployee?.bankDetails?.accountHolderName || '',
+          accountNumber: editEmployee?.bankDetails?.accountNumber || '',
+          ifscCode: editEmployee?.bankDetails?.ifscCode || '',
+          accountType: editEmployee?.bankDetails?.accountType || 'Savings',
+        },
+
+        salary: {
+          basic: editEmployee?.salary?.basic || 0,
+          hra: editEmployee?.salary?.hra || 0,
+          medicalAllowance: editEmployee?.salary?.medicalAllowance || 0,
+          conveyanceAllowance: editEmployee?.salary?.conveyanceAllowance || 0,
+          otherAllowances: editEmployee?.salary?.otherAllowances || 0,
+          deductions: editEmployee?.salary?.deductions || 0,
+          ctc: editEmployee?.salary?.ctc || 0,
+        },
+
+        employmentStatus: editEmployee?.employmentStatus || 'Active',
+      })
+
+      // Mark form as ready AFTER setting the data
+      setTimeout(() => {
+        setIsFormReady(true)
+        console.log('Form marked as ready')
+      }, 100)
+    }
+  }, [editEmployee, employeeId])
 
   return (
     <>
@@ -255,7 +361,7 @@ export default function EmployeeStepperForm() {
         <Col>
           <Card>
             <CardBody>
-              <Form onSubmit={handleSubmit}>
+              <Form onSubmit={handleFormSubmit}>
                 {/* Step 1: Personal */}
                 {activeStep === 0 && (
                   <Row>
@@ -506,16 +612,16 @@ export default function EmployeeStepperForm() {
                 {/* Navigation Buttons */}
                 <div className="d-flex justify-content-between mt-3">
                   {activeStep > 0 && (
-                    <Button variant="secondary" onClick={handlePrev}>
+                    <Button variant="secondary" type="button" onClick={handlePrev}>
                       Previous
                     </Button>
                   )}
                   {activeStep < steps.length - 1 ? (
-                    <Button variant="primary" onClick={handleNext} disabled={!validateStep()}>
+                    <Button variant="primary" type="button" onClick={handleNext} disabled={!validateStep()}>
                       Next
                     </Button>
                   ) : (
-                    <Button variant="success" type="submit" disabled={loading || !validateStep()}>
+                    <Button variant="success" type="button" onClick={handleActualSubmit} disabled={loading || !validateStep() || !isFormReady}>
                       {loading ? <Spinner size="sm" animation="border" /> : 'Submit'}
                     </Button>
                   )}
