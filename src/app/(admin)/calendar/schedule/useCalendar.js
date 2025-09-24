@@ -65,7 +65,6 @@ const useCalendar = () => {
     onCloseModal();
   };
   const onUpdateEvent = data => {
-    console.info(data);
     setEvents(events.map(e => {
       if (e.id === eventData?.id) {
         return {

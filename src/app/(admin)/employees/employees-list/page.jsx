@@ -4,7 +4,7 @@ import PageMetaData from '@/components/PageTitle'
 import IconifyIcon from '@/components/wrappers/IconifyIcon'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { deleteEmployee, getEmployees } from '../../../../redux/features/employee/employeeSlice'
+import { deleteEmployee, getEmployees, updateEmployee } from '../../../../redux/features/employee/employeeSlice'
 import PageHeader from '../../../../components/PageHeader'
 
 export default function EmployeesList() {
@@ -201,6 +201,22 @@ export default function EmployeesList() {
     )
   }
 
+  const handleToggle = async (emp) => {
+    const newStatus = emp?.employmentStatus === 'Active' ? 'Inactive' : 'Active'
+
+    try {
+      await dispatch(
+        updateEmployee({
+          id: emp?._id,
+          employmentStatus: newStatus,
+        }),
+      ).unwrap()
+      dispatch(getEmployees())
+    } catch (error) {
+      console.error('Failed to update status:', error)
+    }
+  }
+
   return (
     <>
       <PageMetaData title="Employees" />
@@ -341,7 +357,12 @@ export default function EmployeesList() {
 
                                 {/* Status */}
                                 <td>
-                                  <Badge bg={emp?.employmentStatus === 'Active' ? 'success' : 'secondary'}>{emp?.employmentStatus}</Badge>
+                                  <Badge
+                                    bg={emp?.employmentStatus === 'Active' ? 'success' : 'secondary'}
+                                    className="cursor-pointer"
+                                    onClick={() => handleToggle(emp)}>
+                                    {emp?.employmentStatus}
+                                  </Badge>
                                 </td>
 
                                 <td>

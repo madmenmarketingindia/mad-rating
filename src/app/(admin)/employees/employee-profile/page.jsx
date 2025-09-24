@@ -110,10 +110,10 @@ export default function EmployeesProfile() {
                   {data.officialDetails?.designation} — {data.officialDetails?.department}
                 </small>
 
-                <div className="d-flex align-items-center">
+                <div className="d-flex align-items-center mt-1">
                   <Badge
                     bg={data?.latestRating?.averageScore >= 4 ? 'success' : data?.latestRating?.averageScore >= 3 ? 'warning' : 'danger'}
-                    className="me-2">
+                    className="me-2 fs-5">
                     {data?.latestRating?.averageScore ?? 'N/A'}
                   </Badge>
                   {renderStars(data?.latestRating?.averageScore || 0)}

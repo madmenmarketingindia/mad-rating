@@ -5,6 +5,8 @@ import PageHeader from '../../../../components/PageHeader'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { calculateIncentive, singlePayrollEmployee, upsertPayroll } from '../../../../redux/features/attendancePayroll/attendancePayrollSlice'
+import { singleMemberIncentive } from '../../../../redux/features/teamIncentive/teamIncentiveSlice'
+import toast from 'react-hot-toast'
 
 export default function UpsertEmployeePayroll() {
   const dispatch = useDispatch()
@@ -13,6 +15,7 @@ export default function UpsertEmployeePayroll() {
   const employeeId = searchParams.get('employeeId')
 
   const { isLoading, employeePayrollData, calculatedIncentive } = useSelector((state) => state.attendancePayroll)
+  const { singleMemberIncentiveData } = useSelector((state) => state.teamIncentive)
 
   const now = new Date()
   const [filters, setFilters] = useState({
@@ -36,6 +39,8 @@ export default function UpsertEmployeePayroll() {
     reimbursement: 0,
     incentive: 0,
     status: '',
+    teamIncentive: 0,
+    teamIncentiveEnabled: false,
   })
 
   const months = [
@@ -59,6 +64,7 @@ export default function UpsertEmployeePayroll() {
   useEffect(() => {
     if (employeeId) {
       dispatch(singlePayrollEmployee({ employeeId, ...filters }))
+      dispatch(singleMemberIncentive({ employeeId, ...filters }))
     }
   }, [dispatch, employeeId, filters.month, filters.year])
 
@@ -86,6 +92,7 @@ export default function UpsertEmployeePayroll() {
         reimbursement: employeePayrollData.data.reimbursement || 0,
         incentive: employeePayrollData.data.incentive || 0,
         status: employeePayrollData.data.status || '',
+        teamIncentive: singleMemberIncentiveData?.data?.amount,
       })
     }
   }, [employeePayrollData])
@@ -101,8 +108,10 @@ export default function UpsertEmployeePayroll() {
       month: filters.month,
       year: filters.year,
       ...formData,
+      teamIncentive: formData.teamIncentiveEnabled ? formData.teamIncentive : 0,
     }
-    dispatch(upsertPayroll(payload))
+    const response = dispatch(upsertPayroll(payload))
+    toast.success('Payroll saved successfully!')
   }
 
   // Modal states
@@ -135,6 +144,23 @@ export default function UpsertEmployeePayroll() {
       })
     }
   }, [showModal, calculatedIncentive])
+
+  useEffect(() => {
+    if (singleMemberIncentiveData?.data) {
+      const amount = singleMemberIncentiveData.data.amount || 0
+      setFormData((prev) => ({
+        ...prev,
+        teamIncentive: amount,
+        teamIncentiveEnabled: amount > 0, // true if amount > 0, else false
+      }))
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        teamIncentive: 0,
+        teamIncentiveEnabled: false,
+      }))
+    }
+  }, [singleMemberIncentiveData])
 
   return (
     <>
@@ -215,11 +241,11 @@ export default function UpsertEmployeePayroll() {
 
                   <Row>
                     <h4 className="mb-3 mt-3">Leave Information</h4>
-                    <Col md={4}>
+                    <Col md={4}  className='mb-2'>
                       <Form.Label>Total Days</Form.Label>
                       <Form.Control type="number" name="totalDays" value={formData.totalDays} onChange={handleChange} />
                     </Col>
-                    <Col md={4}>
+                    <Col md={4} className='mb-2'>
                       <Form.Label>Leaves</Form.Label>
                       <Form.Control type="number" name="leaves" value={formData.leaves} onChange={handleChange} />
                     </Col>
@@ -277,6 +303,39 @@ export default function UpsertEmployeePayroll() {
                         ))}
                       </Form.Select>
                     </Col>
+                  </Row>
+
+                  <Row className="mb-4">
+                    <h4 className="mb-3 mt-3">Incentive</h4>
+                    <Row>
+                      <Col md={4}>
+                        <Form.Check
+                          type="checkbox"
+                          id="enableTeamIncentive"
+                          label="Enable Team Incentive"
+                          checked={formData.teamIncentiveEnabled || false}
+                          onChange={(e) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              teamIncentiveEnabled: e.target.checked,
+                            }))
+                          }
+                          className="mb-2"
+                        />
+
+                        <Form.Control
+                          type="number"
+                          name="teamIncentive"
+                          value={formData.teamIncentive}
+                          onChange={(e) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              teamIncentive: Number(e.target.value) || 0,
+                            }))
+                          }
+                        />
+                      </Col>
+                    </Row>
                   </Row>
 
                   <Button variant="success" onClick={handleSubmit}>

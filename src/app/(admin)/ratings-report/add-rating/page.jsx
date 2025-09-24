@@ -6,6 +6,7 @@ import { createRating, employeeRatingHistory, singleMonthRating } from '../../..
 import { Link, useSearchParams } from 'react-router-dom'
 import PageHeader from '../../../../components/PageHeader'
 import { getEmployees } from '../../../../redux/features/employee/employeeSlice'
+import toast from 'react-hot-toast'
 
 export default function RatingsReports() {
   const dispatch = useDispatch()
@@ -133,6 +134,11 @@ export default function RatingsReports() {
       categories,
     }
     const response = dispatch(createRating(payload))
+    if (queryEmployeeId) {
+      toast.success('Rating updated successfully!')
+    } else {
+      toast.success('Rating created successfully!')
+    }
     if (response.success) {
       dispatch(employeeRatingHistory(selectedEmployeeId))
     }

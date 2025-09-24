@@ -45,4 +45,21 @@ const deleteTeamWiseIncentive = async (incentiveId) => {
   return response.data
 }
 
-export { getAllTeamIncentive, createTeamWiseIncentive, editTeamWiseIncentive, getSingleTeamIncentive, deleteTeamWiseIncentive }
+const getSingleMemberIncentive = async (employeeId, filters) => {
+  const config = await getConfig()
+  const response = await axiosInstance.get(`${BASE_URL}/team/single-member-incentive/${employeeId}`, {
+    ...config,
+    params: filters,
+  })
+
+  return response.data
+}
+
+export {
+  getAllTeamIncentive,
+  createTeamWiseIncentive,
+  editTeamWiseIncentive,
+  getSingleTeamIncentive,
+  deleteTeamWiseIncentive,
+  getSingleMemberIncentive,
+}

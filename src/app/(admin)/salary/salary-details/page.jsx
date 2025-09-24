@@ -99,16 +99,40 @@ export default function EmployeeSalaryDetailPage() {
                   <Col md={4} className="text-end">
                     {/* Company Logo Placeholder */}
                     <h4 className="fw-bold text-primary">MAD MEN MARKETING</h4>
-                    <p className="mb-0">123 Business Street</p>
-                    <p className="mb-0">City, State, PIN</p>
-                    <p className="mb-0">Phone: +91-1234567890</p>
+                    <p className="mb-0"> N-29, RIVIERA APARTMENTS</p>
+                    <p className="mb-0">45 MALL ROAD</p>
+                    <p> CIVIL LINES, NEW DELHI-110054</p>
+                  </Col>
+                </Row>
+
+                <hr />
+
+                <Row>
+                  <Col md={6}>
+                    <p className="mb-1">
+                      <strong>Leaves:</strong> {data?.salaryDetails?.leaves}
+                    </p>
+
+                    <p className="mb-1">
+                      <strong>Leave Adjusted:</strong> {data?.salaryDetails?.leaveAdjusted}
+                    </p>
+                  </Col>
+
+                  <Col md={6}>
+                    <p className="mb-1">
+                      <strong>LateIn:</strong> {data?.salaryDetails?.lateIn}
+                    </p>
+
+                    <p className="mb-1">
+                      <strong>LateIn Adjusted:</strong> {data?.salaryDetails?.lateAdjusted}
+                    </p>
                   </Col>
                 </Row>
 
                 <hr />
 
                 {/* Salary Payable & Deductions */}
-                <Row className="mt-2">
+                <Row className="mt-4">
                   <Col md={6}>
                     <h5>Salary Payable</h5>
                     <Table bordered size="sm" responsive>
@@ -139,6 +163,11 @@ export default function EmployeeSalaryDetailPage() {
                         </tr>
 
                         <tr>
+                          <td>Salary</td>
+                          <td>{data.salaryDetails?.salary?.toFixed(2) || 0}</td>
+                        </tr>
+
+                        <tr>
                           <td>Reimbursement</td>
                           <td>{data.salaryDetails?.reimbursement?.toFixed(2) || 0}</td>
                         </tr>
@@ -148,6 +177,11 @@ export default function EmployeeSalaryDetailPage() {
                           <td>
                             {data.salaryDetails?.incentiveAmount?.toFixed(2) || 0} ({data?.rating?.averageScore}%)
                           </td>
+                        </tr>
+
+                        <tr>
+                          <td>Team Incentive</td>
+                          <td>{data.salaryDetails?.teamIncentive?.toFixed(2) || 0}</td>
                         </tr>
                       </tbody>
                     </Table>

@@ -80,7 +80,7 @@ export default function EmployeeStepperForm({ employeeId }) {
   const steps = [{ title: 'Personal Details' }, { title: 'Official Details' }, { title: 'Bank Information' }, { title: 'Salary Information' }]
 
   const handleNext = () => {
-    console.log('Next clicked, current step:', activeStep)
+
     if (activeStep < steps.length - 1) setActiveStep((prev) => prev + 1)
   }
 
