@@ -50,10 +50,11 @@ export default function CreateUser() {
 
   useEffect(() => {
     if (userId && getUserData?.data) {
-      const { username, email, role } = getUserData.data
+      const { username, email, role, password } = getUserData.data
       setValue('username', username)
       setValue('email', email)
       setValue('role', role)
+      setValue('password', password)
     }
   }, [userId, getUserData, setValue])
 
@@ -88,9 +89,8 @@ export default function CreateUser() {
                 </FormSelect>
               </div>
 
-              {!userId && ( // Only show password field when creating
-                <PasswordFormInput name="password" label="Password" control={control} placeholder="Enter password" containerClassName="mt-3" />
-              )}
+              {/* Only show password field when creating */}
+              <PasswordFormInput name="password" label="Password" control={control} placeholder="Enter password" containerClassName="mt-3" />
 
               <Button className="mt-3" variant="primary" type="submit" disabled={loading || reduxLoading}>
                 {loading || reduxLoading ? (

@@ -4,6 +4,7 @@ import {
   deleteTeamWiseIncentive,
   editTeamWiseIncentive,
   getAllTeamIncentive,
+  getSingleMemberIncentive,
   getSingleTeamIncentive,
 } from './teamIncentiveService'
 
@@ -17,6 +18,7 @@ const initialState = {
   createIncentiveData: {},
   updatedIncentiveData: {},
   singleIncentiveData: {},
+  singleMemberIncentiveData: {},
 }
 
 const removeUserFromStorage = () => {
@@ -93,6 +95,16 @@ export const deleteTeamIncentive = createAsyncThunk('team/delete-incentive', asy
     return response
   } catch (error) {
     const message = error.response?.data?.message || error.message || 'Update Incentive failed'
+    return thunkAPI.rejectWithValue(message)
+  }
+})
+
+export const singleMemberIncentive = createAsyncThunk('team/single-members-get-amount', async ({ employeeId, month, year }, thunkAPI) => {
+  try {
+    const response = await getSingleMemberIncentive(employeeId, { month, year })
+    return response
+  } catch (error) {
+    const message = error.response?.data?.message || error.message || 'Fetch single team member failed'
     return thunkAPI.rejectWithValue(message)
   }
 })
@@ -188,6 +200,20 @@ export const teamIncentiveSlice = createSlice({
         state.isLoading = false
       })
       .addCase(deleteTeamIncentive.rejected, (state, action) => {
+        state.message = action.payload
+        state.isError = true
+        state.isLoading = false
+      })
+      .addCase(singleMemberIncentive.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(singleMemberIncentive.fulfilled, (state, action) => {
+        state.isAuthenticated = true
+        state.isSuccess = true
+        state.singleMemberIncentiveData = action.payload
+        state.isLoading = false
+      })
+      .addCase(singleMemberIncentive.rejected, (state, action) => {
         state.message = action.payload
         state.isError = true
         state.isLoading = false
