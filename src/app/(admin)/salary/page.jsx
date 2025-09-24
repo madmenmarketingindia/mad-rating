@@ -28,8 +28,6 @@ export default function EmployeeSalaryList() {
 
   const employee = salaryByEmployee?.data
 
-  console.log('employeessss', employee)
-
   return (
     <>
       <PageMetaData title="Employee Salary" />
