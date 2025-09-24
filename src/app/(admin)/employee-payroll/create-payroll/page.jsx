@@ -241,11 +241,11 @@ export default function UpsertEmployeePayroll() {
 
                   <Row>
                     <h4 className="mb-3 mt-3">Leave Information</h4>
-                    <Col md={4}  className='mb-2'>
+                    <Col md={4} className="mb-2">
                       <Form.Label>Total Days</Form.Label>
                       <Form.Control type="number" name="totalDays" value={formData.totalDays} onChange={handleChange} />
                     </Col>
-                    <Col md={4} className='mb-2'>
+                    <Col md={4} className="mb-2">
                       <Form.Label>Leaves</Form.Label>
                       <Form.Control type="number" name="leaves" value={formData.leaves} onChange={handleChange} />
                     </Col>
@@ -282,16 +282,6 @@ export default function UpsertEmployeePayroll() {
                   </Row>
 
                   <Row className="mb-3">
-                    <Col md={2}>
-                      <Form.Label>Incentive</Form.Label>
-                      <Form.Control type="number" name="incentive" value={formData.incentive} onChange={handleChange} />
-                    </Col>
-                    <Col md={2} className="d-flex align-items-end">
-                      <Button variant="primary" onClick={() => setShowModal(true)}>
-                        Calculate Incentive
-                      </Button>
-                    </Col>
-
                     <Col md={4}>
                       <Form.Label>Status</Form.Label>
                       <Form.Select name="status" value={formData.status} onChange={handleChange}>
@@ -334,6 +324,17 @@ export default function UpsertEmployeePayroll() {
                             }))
                           }
                         />
+                      </Col>
+
+                      <Col md={2}  className='mt-1'>
+                        <Form.Label>Incentive</Form.Label>
+                        <Form.Control type="number" name="incentive" value={formData.incentive} onChange={handleChange} />
+                      </Col>
+                      <Col md={3} className="" style={{marginTop :"30px"}}>
+                        <Form.Label></Form.Label>
+                        <Button variant="primary" onClick={() => setShowModal(true)}>
+                          Calculate Incentive
+                        </Button>
                       </Col>
                     </Row>
                   </Row>
