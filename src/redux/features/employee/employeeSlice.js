@@ -3,6 +3,7 @@ import {
   createEmployee,
   deleteEmployeeByAdmin,
   editEmployee,
+  exportEmployeesAdmin,
   getAllDepartments,
   getAllEmployee,
   getEmployee,
@@ -25,6 +26,7 @@ const initialState = {
   getEmProfile: {},
   allDepartmentsData: {},
   employeesByDepartmentData: {},
+  exportEmployeesData: {},
 }
 
 // Helper functions to handle localStorage safely
@@ -148,6 +150,29 @@ export const employeesByDepartment = createAsyncThunk('employee/get-all-employee
     return response
   } catch (error) {
     const message = error.response?.data?.message || error.message || 'Fetch Employee failed'
+    return thunkAPI.rejectWithValue(message)
+  }
+})
+
+export const exportEmployees = createAsyncThunk('employee/export', async (_, thunkAPI) => {
+  try {
+    const response = await exportEmployeesAdmin()
+
+    // Create blob download
+    const url = window.URL.createObjectURL(new Blob([response.data]))
+    const link = document.createElement('a')
+    link.href = url
+
+    const today = new Date().toISOString().split('T')[0]
+    link.setAttribute('download', `employees-${today}.xlsx`)
+
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+
+    return true
+  } catch (error) {
+    const message = error.response?.data?.message || error.message || 'Export employees failed'
     return thunkAPI.rejectWithValue(message)
   }
 })
@@ -300,6 +325,20 @@ export const employeeSlice = createSlice({
         state.isLoading = false
       })
       .addCase(employeesByDepartment.rejected, (state, action) => {
+        state.message = action.payload
+        state.isError = true
+        state.isLoading = false
+      })
+      .addCase(exportEmployees.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(exportEmployees.fulfilled, (state, action) => {
+        state.isAuthenticated = true
+        state.isSuccess = true
+        state.exportEmployeesData = action.payload
+        state.isLoading = false
+      })
+      .addCase(exportEmployees.rejected, (state, action) => {
         state.message = action.payload
         state.isError = true
         state.isLoading = false

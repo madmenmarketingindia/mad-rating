@@ -3,8 +3,9 @@ import { CardBody, Col, Row, Button, Card, Spinner, Table, Form } from 'react-bo
 import PageMetaData from '@/components/PageTitle'
 import { useDispatch, useSelector } from 'react-redux'
 import PageHeader from '../../../components/PageHeader'
-import { listPayrollByEmployees, upsertPayroll } from '../../../redux/features/attendancePayroll/attendancePayrollSlice'
+import { exportEmployeesPayroll, listPayrollByEmployees, upsertPayroll } from '../../../redux/features/attendancePayroll/attendancePayrollSlice'
 import { Link } from 'react-router-dom'
+import IconifyIcon from '@/components/wrappers/IconifyIcon'
 
 export default function EmployeePayrollList() {
   const dispatch = useDispatch()
@@ -48,6 +49,10 @@ export default function EmployeePayrollList() {
     dispatch(listPayrollByEmployees(filters))
   }
 
+  const handleExportEmployeePayroll = () => {
+    dispatch(exportEmployeesPayroll({ month: filters.month, year: filters.year }))
+  }
+
   return (
     <>
       <PageMetaData title="Employees" />
@@ -89,6 +94,14 @@ export default function EmployeePayrollList() {
 
       <Row>
         <Col>
+          <Row className="mb-1">
+            <Col className="d-flex justify-content-end">
+              <Button onClick={() => handleExportEmployeePayroll()} size="sm" variant="primary">
+                <IconifyIcon icon="bx:download" className="me-1" />
+                Export Payroll
+              </Button>
+            </Col>
+          </Row>
           <Card>
             <CardBody>
               {isLoading ? (

@@ -58,6 +58,14 @@ const getEmployeesByDepartment = async (departmentName) => {
   return response.data
 }
 
+const exportEmployeesAdmin = async () => {
+  const config = await getConfig()
+  return axiosInstance.get(`${BASE_URL}/export/employees`, {
+    ...config,
+    responseType: 'blob',
+  })
+}
+
 export {
   createEmployee,
   editEmployee,
@@ -68,4 +76,5 @@ export {
   userStatus,
   getAllDepartments,
   getEmployeesByDepartment,
+  exportEmployeesAdmin,
 }
