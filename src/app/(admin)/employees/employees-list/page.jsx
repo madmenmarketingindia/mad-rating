@@ -4,7 +4,7 @@ import PageMetaData from '@/components/PageTitle'
 import IconifyIcon from '@/components/wrappers/IconifyIcon'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { deleteEmployee, getEmployees, updateEmployee } from '../../../../redux/features/employee/employeeSlice'
+import { deleteEmployee, exportEmployees, getEmployees, updateEmployee } from '../../../../redux/features/employee/employeeSlice'
 import PageHeader from '../../../../components/PageHeader'
 
 export default function EmployeesList() {
@@ -217,6 +217,10 @@ export default function EmployeesList() {
     }
   }
 
+  const handleExportEmployee = async () => {
+    const response = await dispatch(exportEmployees())
+  }
+
   return (
     <>
       <PageMetaData title="Employees" />
@@ -224,7 +228,12 @@ export default function EmployeesList() {
         title={'Employee List'}
         breadcrumbItems={[{ label: 'Dashboard', href: '/' }, { label: 'Employee List' }]}
         rightContent={
-          <div>
+          <div className="d-flex gap-2">
+            <Button onClick={() => handleExportEmployee()} size="sm" variant="primary">
+              <IconifyIcon icon="bx:download" className="me-1" />
+              Export Employees
+            </Button>
+
             <Button as={Link} to="/employees/employees-create" size="sm" variant="primary">
               <IconifyIcon icon="bx:plus" className="me-1" />
               Create Employee

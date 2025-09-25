@@ -35,4 +35,13 @@ const employeeCalculateIncentive = async (employeeId, filters) => {
   return response.data
 }
 
-export { getListPayrollByEmployees, upsertPayrollEmployee, getSinglePayrollEmployee, employeeCalculateIncentive }
+const exportEmployeesPayrollAdmin = async (month, year) => {
+  const config = await getConfig()
+  const response = await axiosInstance.get(`${BASE_URL}/export/employees-payroll?month=${month}&year=${year}`, {
+    ...config,
+    responseType: 'blob',
+  })
+  return response.data
+}
+
+export { getListPayrollByEmployees, upsertPayrollEmployee, getSinglePayrollEmployee, employeeCalculateIncentive, exportEmployeesPayrollAdmin }

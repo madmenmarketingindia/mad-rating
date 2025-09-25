@@ -1,5 +1,12 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { employeeCalculateIncentive, getListPayrollByEmployees, getSinglePayrollEmployee, upsertPayrollEmployee } from './attendancePayrollService'
+import {
+  employeeCalculateIncentive,
+  exportEmployeesPayrollAdmin,
+  getListPayrollByEmployees,
+  getSinglePayrollEmployee,
+  upsertPayrollEmployee,
+} from './attendancePayrollService'
+import { downloadBlobFile } from '../../../utils/downloadBlobFile'
 
 const initialState = {
   payrollByEmployees: [],
@@ -8,6 +15,7 @@ const initialState = {
   monthRating: {},
   ratingHistory: [],
   calculatedIncentive: {},
+  exportEmployeesPayrollData: {},
   isAuthenticated: false,
   isError: false,
   isSuccess: false,
@@ -75,6 +83,18 @@ export const calculateIncentive = createAsyncThunk('incentive/calculate', async 
     return response
   } catch (error) {
     const message = error.response?.data?.message || error.message || 'Fetch incentive calculation failed'
+    return thunkAPI.rejectWithValue(message)
+  }
+})
+
+export const exportEmployeesPayroll = createAsyncThunk('employee/export-payroll', async ({ month, year }, thunkAPI) => {
+  try {
+    const data = await exportEmployeesPayrollAdmin(month, year)
+    const today = new Date().toISOString().split('T')[0]
+    downloadBlobFile(data, `employees-payroll-${today}.xlsx`)
+    return true
+  } catch (error) {
+    const message = error.response?.data?.message || error.message || 'Export payroll failed'
     return thunkAPI.rejectWithValue(message)
   }
 })
@@ -156,6 +176,20 @@ export const attendancePayrollSlice = createSlice({
         state.isLoading = false
       })
       .addCase(calculateIncentive.rejected, (state, action) => {
+        state.message = action.payload
+        state.isError = true
+        state.isLoading = false
+      })
+      .addCase(exportEmployeesPayroll.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(exportEmployeesPayroll.fulfilled, (state, action) => {
+        state.isAuthenticated = true
+        state.isSuccess = true
+        state.exportEmployeesPayrollData = action.payload
+        state.isLoading = false
+      })
+      .addCase(exportEmployeesPayroll.rejected, (state, action) => {
         state.message = action.payload
         state.isError = true
         state.isLoading = false
