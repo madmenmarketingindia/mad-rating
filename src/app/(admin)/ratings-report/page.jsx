@@ -9,8 +9,7 @@ import PageHeader from '@/components/PageHeader'
 
 export default function RatingsReports() {
   const dispatch = useDispatch()
-  const { allEmployeeRating, isLoading } = useSelector((state) => state.ratingReport);
-  
+  const { allEmployeeRating, isLoading } = useSelector((state) => state.ratingReport)
 
   const [filters, setFilters] = useState({
     name: '',

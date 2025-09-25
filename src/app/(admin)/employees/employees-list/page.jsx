@@ -228,7 +228,7 @@ export default function EmployeesList() {
         title={'Employee List'}
         breadcrumbItems={[{ label: 'Dashboard', href: '/' }, { label: 'Employee List' }]}
         rightContent={
-          <div className="d-flex gap-2">
+          <div className="d-flex gap-2 mb-2 md:mb-0">
             <Button onClick={() => handleExportEmployee()} size="sm" variant="primary">
               <IconifyIcon icon="bx:download" className="me-1" />
               Export Employees
@@ -467,7 +467,10 @@ export default function EmployeesList() {
                                   <div className="fw-semibold">
                                     {emp?.firstName} {emp?.lastName}
                                   </div>
-                                  <Badge bg={emp?.employmentStatus === 'Active' ? 'success' : 'secondary'} className="small">
+                                  <Badge
+                                    bg={emp?.employmentStatus === 'Active' ? 'success' : 'secondary'}
+                                    className="cursor-pointer"
+                                    onClick={() => handleToggle(emp)}>
                                     {emp?.employmentStatus}
                                   </Badge>
                                 </div>

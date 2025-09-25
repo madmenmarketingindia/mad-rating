@@ -95,7 +95,7 @@ export default function EmployeePayrollList() {
       <Row>
         <Col>
           <Row className="mb-1">
-            <Col className="d-flex justify-content-end">
+            <Col className="d-flex md:justify-content-end my-2">
               <Button onClick={() => handleExportEmployeePayroll()} size="sm" variant="primary">
                 <IconifyIcon icon="bx:download" className="me-1" />
                 Export Payroll
