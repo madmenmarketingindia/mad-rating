@@ -326,11 +326,11 @@ export default function UpsertEmployeePayroll() {
                         />
                       </Col>
 
-                      <Col md={2}  className='mt-1'>
+                      <Col md={2} className="mt-1">
                         <Form.Label>Incentive</Form.Label>
                         <Form.Control type="number" name="incentive" value={formData.incentive} onChange={handleChange} />
                       </Col>
-                      <Col md={3} className="" style={{marginTop :"30px"}}>
+                      <Col md={3} className="" style={{ marginTop: '30px' }}>
                         <Form.Label></Form.Label>
                         <Button variant="primary" onClick={() => setShowModal(true)}>
                           Calculate Incentive

@@ -162,6 +162,9 @@ export default function EmployeesProfile() {
                     <p>
                       <strong>Joining Date:</strong> {new Date(data?.officialDetails?.joiningDate).toLocaleDateString()}
                     </p>
+                    <p>
+                      <strong>Last Working Day:</strong> {new Date(data?.officialDetails?.lastWorkingDay).toLocaleDateString()}
+                    </p>
                   </Col>
                   <Col md={6}>
                     <p>
@@ -242,14 +245,14 @@ export default function EmployeesProfile() {
                 {data?.latestRating?.averageScore ? (
                   <>
                     <p>
-                      <strong>Month:</strong> {data?.latestRating.month}-{data?.latestRating.year}
+                      <strong>Month:</strong> {data?.latestRating?.month}-{data?.latestRating?.year}
                     </p>
                     <p>
-                      <strong>Average Score:</strong> <Badge bg="info">{data?.latestRating.averageScore}</Badge>
+                      <strong>Average Score:</strong> <Badge bg="info">{data?.latestRating?.averageScore}</Badge>
                     </p>
                     <Table striped bordered size="sm" className="mb-0">
                       <tbody>
-                        {Object.entries(data?.latestRating.categories || {}).map(([key, val]) => (
+                        {Object.entries(data?.latestRating?.categories || {}).map(([key, val]) => (
                           <tr key={key}>
                             <td>{key}</td>
                             <td>{val}</td>
