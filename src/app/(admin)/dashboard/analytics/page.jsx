@@ -23,6 +23,7 @@ import { getEmployees } from '../../../../redux/features/employee/employeeSlice'
 import Stats1 from './components/Stats1'
 import { getUsers } from '../../../../redux/features/user/userSlice'
 import TeamYearlyRatingChart from './components/TeamYearlyRatingChart'
+import WelcomeCard from './components/WelcomeCard'
 
 export default function Home() {
   const dispatch = useDispatch()
@@ -118,6 +119,7 @@ export default function Home() {
                 </div>
               ) : (
                 <>
+                  <WelcomeCard employeeName={user?.data?.user?.name || 'Employee'} />
                   <Row>
                     {empMonthlyRating?.data && (
                       <Col lg={6} xs={12} className="mb-3">

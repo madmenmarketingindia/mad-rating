@@ -75,7 +75,7 @@ export default function UsersList() {
           { label: 'Users List', href: '/users/users-list' },
         ]}
         rightContent={
-          <Button as={Link} to="/users/create-user" size="sm" variant="primary">
+          <Button as={Link} to="/users/create-user" size="sm" variant="primary" className="mb-2 sm-mb-0">
             <IconifyIcon icon="bx:plus" className="me-1" />
             Create User
           </Button>

@@ -78,16 +78,24 @@ export default function TeamIncentive() {
         title="Team Incentive"
         breadcrumbItems={[{ label: 'Dashboard', href: '/' }, { label: 'Team Incentive' }]}
         rightContent={
-          <div className="d-flex gap-2 flex-wrap">
-            <Form.Select size="sm" value={selectedMonth} onChange={(e) => setSelectedMonth(Number(e.target.value))} style={{ width: '140px' }}>
-              {renderMonthOptions()}
-            </Form.Select>
+          <div className="d-flex flex-column flex-md-row gap-2">
+            <div className="d-flex gap-2">
+              <Form.Select size="sm" value={selectedMonth} onChange={(e) => setSelectedMonth(Number(e.target.value))} style={{ width: '140px' }}>
+                {renderMonthOptions()}
+              </Form.Select>
 
-            <Form.Select size="sm" value={selectedYear} onChange={(e) => setSelectedYear(Number(e.target.value))} style={{ width: '120px' }}>
-              {renderYearOptions()}
-            </Form.Select>
+              <Form.Select size="sm" value={selectedYear} onChange={(e) => setSelectedYear(Number(e.target.value))} style={{ width: '120px' }}>
+                {renderYearOptions()}
+              </Form.Select>
+            </div>
 
-            <Button as={Link} to="/teams-incentive/list/create" size="sm" variant="primary">
+            <Button
+              as={Link}
+              to="/teams-incentive/list/create"
+              size="sm"
+              variant="primary"
+              className="mt-2 mt-md-0  mb-2 md:md-0 w-50" // adds top margin on mobile only
+            >
               <IconifyIcon icon="bx:plus" className="me-1" />
               Add Incentive
             </Button>
