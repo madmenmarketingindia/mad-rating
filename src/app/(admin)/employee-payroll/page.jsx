@@ -158,7 +158,7 @@ export default function EmployeePayrollList() {
                     ) : (
                       <tr>
                         <td colSpan="6" className="text-center py-4">
-                          <p className="mb-2">🚫 No payroll records found</p>
+                          <p className="mb-2">No payroll records found</p>
                           <Button size="sm" variant="outline-primary" onClick={() => dispatch(listPayrollByEmployees(filters))}>
                             Retry
                           </Button>

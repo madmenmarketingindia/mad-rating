@@ -35,6 +35,7 @@ export default function EmployeeStepperForm({ employeeId }) {
       department: '',
       designation: '',
       joiningDate: '',
+      lastWorkingDay: '',
     },
 
     bankDetails: {
@@ -80,7 +81,6 @@ export default function EmployeeStepperForm({ employeeId }) {
   const steps = [{ title: 'Personal Details' }, { title: 'Official Details' }, { title: 'Bank Information' }, { title: 'Salary Information' }]
 
   const handleNext = () => {
-
     if (activeStep < steps.length - 1) setActiveStep((prev) => prev + 1)
   }
 
@@ -167,6 +167,7 @@ export default function EmployeeStepperForm({ employeeId }) {
             department: '',
             designation: '',
             joiningDate: '',
+            lastWorkingDay: '',
           },
           bankDetails: {
             bankName: '',
@@ -277,6 +278,7 @@ export default function EmployeeStepperForm({ employeeId }) {
           joiningDate: editEmployee?.officialDetails?.joiningDate
             ? editEmployee.officialDetails.joiningDate.split('T')[0] // format for <input type="date" />
             : '',
+          lastWorkingDay: editEmployee?.officialDetails.lastWorkingDay?.split('T')[0] || '',
         },
 
         bankDetails: {
@@ -367,11 +369,11 @@ export default function EmployeeStepperForm({ employeeId }) {
                   <Row>
                     <Col md={6} className="mb-3">
                       <Form.Label>First Name *</Form.Label>
-                      <Form.Control name="firstName" value={formData.firstName} onChange={(e) => handleChange(e)} />
+                      <Form.Control name="firstName" className="text-capitalize" value={formData.firstName} onChange={(e) => handleChange(e)} />
                     </Col>
                     <Col md={6} className="mb-3">
                       <Form.Label>Last Name *</Form.Label>
-                      <Form.Control name="lastName" value={formData.lastName} onChange={(e) => handleChange(e)} />
+                      <Form.Control name="lastName" className="text-capitalize" value={formData.lastName} onChange={(e) => handleChange(e)} />
                     </Col>
                     <Col md={6} className="mb-3">
                       <Form.Label>Email *</Form.Label>
@@ -516,6 +518,16 @@ export default function EmployeeStepperForm({ employeeId }) {
                         onChange={(e) => handleChange(e, 'officialDetails')}
                       />
                     </Col>
+
+                    <Col md={6} className="mb-3">
+                      <Form.Label>Last Working Day </Form.Label>
+                      <Form.Control
+                        type="date"
+                        name="lastWorkingDay"
+                        value={formData.officialDetails.lastWorkingDay}
+                        onChange={(e) => handleChange(e, 'officialDetails')}
+                      />
+                    </Col>
                   </Row>
                 )}
 
@@ -524,15 +536,26 @@ export default function EmployeeStepperForm({ employeeId }) {
                   <Row>
                     <Col md={6} className="mb-3">
                       <Form.Label>Bank Name</Form.Label>
-                      <Form.Control name="bankName" value={formData.bankDetails.bankName} onChange={(e) => handleChange(e, 'bankDetails')} />
+                      <Form.Control
+                        className="text-capitalize"
+                        name="bankName"
+                        value={formData.bankDetails.bankName}
+                        onChange={(e) => handleChange(e, 'bankDetails')}
+                      />
                     </Col>
                     <Col md={6} className="mb-3">
                       <Form.Label>Branch Name</Form.Label>
-                      <Form.Control name="branchName" value={formData.bankDetails.branchName} onChange={(e) => handleChange(e, 'bankDetails')} />
+                      <Form.Control
+                        name="branchName"
+                        className="text-capitalize"
+                        value={formData.bankDetails.branchName}
+                        onChange={(e) => handleChange(e, 'bankDetails')}
+                      />
                     </Col>
                     <Col md={6} className="mb-3">
                       <Form.Label>Account Holder Name</Form.Label>
                       <Form.Control
+                        className="text-capitalize"
                         name="accountHolderName"
                         value={formData.bankDetails.accountHolderName}
                         onChange={(e) => handleChange(e, 'bankDetails')}
@@ -548,7 +571,12 @@ export default function EmployeeStepperForm({ employeeId }) {
                     </Col>
                     <Col md={6} className="mb-3">
                       <Form.Label>IFSC Code</Form.Label>
-                      <Form.Control name="ifscCode" value={formData.bankDetails.ifscCode} onChange={(e) => handleChange(e, 'bankDetails')} />
+                      <Form.Control
+                        name="ifscCode"
+                        style={{ textTransform: 'uppercase' }}
+                        value={formData.bankDetails.ifscCode}
+                        onChange={(e) => handleChange(e, 'bankDetails')}
+                      />
                     </Col>
                     <Col md={6} className="mb-3">
                       <Form.Label>Account Type</Form.Label>
