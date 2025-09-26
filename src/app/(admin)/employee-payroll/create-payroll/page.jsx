@@ -95,14 +95,14 @@ export default function UpsertEmployeePayroll() {
         teamIncentive: singleMemberIncentiveData?.data?.amount,
       })
     }
-  }, [employeePayrollData])
+  }, [employeePayrollData, dispatch])
 
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: Number(value) || value }))
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const payload = {
       employeeId,
       month: filters.month,
@@ -110,7 +110,8 @@ export default function UpsertEmployeePayroll() {
       ...formData,
       teamIncentive: formData.teamIncentiveEnabled ? formData.teamIncentive : 0,
     }
-    const response = dispatch(upsertPayroll(payload))
+    await dispatch(upsertPayroll(payload)).unwrap()
+    await dispatch(singlePayrollEmployee({ employeeId, ...filters }))
     toast.success('Payroll saved successfully!')
   }
 
