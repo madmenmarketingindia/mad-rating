@@ -61,17 +61,46 @@ export default function EmployeeStepperForm({ employeeId }) {
   })
 
   // --- Handle Change for Nested Keys ---
+  // const handleChange = (e, section) => {
+  //   const { name, value } = e.target
+
+  //   if (section) {
+  //     setFormData((prev) => ({
+  //       ...prev,
+  //       [section]: {
+  //         ...prev[section],
+  //         [name]: value,
+  //       },
+  //     }))
+  //   } else {
+  //     setFormData((prev) => ({ ...prev, [name]: value }))
+  //   }
+  // }
+
   const handleChange = (e, section) => {
     const { name, value } = e.target
 
     if (section) {
-      setFormData((prev) => ({
-        ...prev,
-        [section]: {
-          ...prev[section],
-          [name]: value,
-        },
-      }))
+      setFormData((prev) => {
+        const updatedSection = { ...prev[section], [name]: value }
+
+        // If salary section, calculate total CTC
+        if (section === 'salary') {
+          const basic = Number(updatedSection.basic) || 0
+          const hra = Number(updatedSection.hra) || 0
+          const medicalAllowance = Number(updatedSection.medicalAllowance) || 0
+          const conveyanceAllowance = Number(updatedSection.conveyanceAllowance) || 0
+          const otherAllowances = Number(updatedSection.otherAllowances) || 0
+          const deductions = Number(updatedSection.deductions) || 0
+
+          updatedSection.ctc = basic + hra + medicalAllowance + conveyanceAllowance + otherAllowances - deductions
+        }
+
+        return {
+          ...prev,
+          [section]: updatedSection,
+        }
+      })
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }))
     }

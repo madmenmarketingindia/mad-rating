@@ -23,6 +23,8 @@ export default function UpsertEmployeePayroll() {
     year: now.getFullYear(),
   })
 
+  console.log('employeePayrollData', employeePayrollData)
+
   const [formData, setFormData] = useState({
     basicSalary: 0,
     conveyanceAllowance: 0,
@@ -371,7 +373,10 @@ export default function UpsertEmployeePayroll() {
                         <th>Total Days</th>
                         <th>Present Days</th>
                         <th>Absent Days</th>
+                        <th>Leave</th>
                         <th>Leave Adjusted</th>
+                        <th>late In</th>
+                        <th>lateIn Adjusted</th>
                         <th>Payable Days</th>
                         <th>Salary</th>
                         <th>Deductions</th>
@@ -396,7 +401,10 @@ export default function UpsertEmployeePayroll() {
                         <td>{employeePayrollData.data.totalDays}</td>
                         <td>{employeePayrollData.data.totalDays - (employeePayrollData.data.absent + employeePayrollData.data.leaves)}</td>
                         <td>{employeePayrollData.data.absent}</td>
+                        <td>{employeePayrollData.data.leaves}</td>
                         <td>{employeePayrollData.data.leaveAdjusted}</td>
+                        <td>{employeePayrollData.data.lateIn}</td>
+                        <td>{employeePayrollData.data.lateAdjusted}</td>
                         <td>{employeePayrollData.data.payableDays}</td>
                         <td>{employeePayrollData.data.salary}</td>
                         <td>{employeePayrollData.data.deductions}</td>
