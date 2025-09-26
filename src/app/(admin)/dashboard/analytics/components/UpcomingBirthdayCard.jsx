@@ -12,19 +12,19 @@ const UpcomingBirthdayCard = ({ birthdays }) => {
       <Card.Body>
         <SimpleBar style={{ maxHeight: 310 }}>
           {birthdays?.length > 0 ? (
-            birthdays.map((user, idx) => (
+            birthdays?.map((user, idx) => (
               <div
                 key={idx}
                 className="d-flex align-items-center justify-content-between mb-3 p-2 border-bottom rounded"
                 style={{ background: '#f9f9f9' }}>
                 <div>
-                  <strong className="text-capitalize">{user.name}</strong>
+                  <strong className="text-capitalize">{user?.name}</strong>
                   <div className="text-muted" style={{ fontSize: '0.85rem' }}>
-                    {user.designation}
+                    {user?.designation}
                   </div>
                 </div>
                 <div className="text-end">
-                  <span className="badge bg-info text-dark p-2">{user.birthday}</span>
+                  <span className="badge bg-info text-dark p-2">{user?.birthday}</span>
                 </div>
               </div>
             ))

@@ -91,22 +91,18 @@ export default function Home() {
 
           <Row className="mt-4">
             <h4 className="mb-3">Work Milestone</h4>
-            {upcomingBirthday?.data?.length > 0 && (
-              <Col lg={4} md={6} className="mb-3">
-                <UpcomingBirthdayCard birthdays={upcomingBirthday?.data} />
-              </Col>
-            )}
-            {upcomingWorkAnniversary?.data?.length > 0 && (
-              <Col lg={4} md={6} className="mb-3">
-                <UpcomingAnniversaryCard anniversaries={upcomingWorkAnniversary?.data} />
-              </Col>
-            )}
 
-            {upcomingReviewsData?.data?.length > 0 && (
-              <Col lg={4} md={6} className="mb-3">
-                <UpcomingReviewsCard reviews={upcomingReviewsData?.data} />
-              </Col>
-            )}
+            <Col lg={4} md={6} className="mb-3">
+              <UpcomingBirthdayCard birthdays={upcomingBirthday?.data} />
+            </Col>
+
+            <Col lg={4} md={6} className="mb-3">
+              <UpcomingAnniversaryCard anniversaries={upcomingWorkAnniversary?.data} />
+            </Col>
+
+            <Col lg={4} md={6} className="mb-3">
+              <UpcomingReviewsCard reviews={upcomingReviewsData?.data} />
+            </Col>
           </Row>
         </>
       ) : (

@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import {
   adminCreateDisciplinaryAction,
+  deleteDisciplinaryAction,
   editDisciplinaryActionStatus,
   getAllDisciplinaryActions,
   getEmployeeDisciplinaryActions,
@@ -14,6 +15,7 @@ const initialState = {
   singleDisciplinaryActionData: {},
   employeeDisciplinaryActionsData: {},
   upcomingReviewsData: {},
+  deleteDisciplinaryData: {},
   isAuthenticated: false,
   isError: false,
   isSuccess: false,
@@ -98,6 +100,16 @@ export const employeeDisciplinaryActions = createAsyncThunk('disciplinary-action
 export const upcomingReviews = createAsyncThunk('disciplinary-actions/upcoming', async (_, thunkAPI) => {
   try {
     const response = await getUpcomingReviews()
+    return response
+  } catch (error) {
+    const message = error.response?.data?.message || error.message || 'upcoming disciplinary Actions Rating Report failed'
+    return thunkAPI.rejectWithValue(message)
+  }
+})
+
+export const deleteDisciplinary = createAsyncThunk('disciplinary-actions/delete', async (actionId, thunkAPI) => {
+  try {
+    const response = await deleteDisciplinaryAction(actionId)
     return response
   } catch (error) {
     const message = error.response?.data?.message || error.message || 'upcoming disciplinary Actions Rating Report failed'
@@ -210,6 +222,20 @@ export const disciplinaryActionsSlice = createSlice({
         state.isLoading = false
       })
       .addCase(upcomingReviews.rejected, (state, action) => {
+        state.message = action.payload
+        state.isError = true
+        state.isLoading = false
+      })
+      .addCase(deleteDisciplinary.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(deleteDisciplinary.fulfilled, (state, action) => {
+        state.isAuthenticated = true
+        state.isSuccess = true
+        state.deleteDisciplinaryData = action.payload
+        state.isLoading = false
+      })
+      .addCase(deleteDisciplinary.rejected, (state, action) => {
         state.message = action.payload
         state.isError = true
         state.isLoading = false

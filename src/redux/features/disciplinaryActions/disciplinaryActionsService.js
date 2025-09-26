@@ -42,6 +42,12 @@ const getUpcomingReviews = async () => {
   return response.data
 }
 
+const deleteDisciplinaryAction = async (actionId) => {
+  const config = await getConfig()
+  const response = await axiosInstance.delete(`${BASE_URL}/disciplinary/delete/${actionId}`, config)
+  return response.data
+}
+
 export {
   getAllDisciplinaryActions,
   editDisciplinaryActionStatus,
@@ -49,4 +55,5 @@ export {
   getSingleDisciplinaryAction,
   getEmployeeDisciplinaryActions,
   getUpcomingReviews,
+  deleteDisciplinaryAction,
 }
