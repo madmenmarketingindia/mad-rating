@@ -1,15 +1,41 @@
 import { useEffect, useState } from 'react'
-import { Row, Col, Card, Spinner, Table, Form, Button, Dropdown } from 'react-bootstrap'
+import { Row, Col, Card, Spinner, Table, Form, Button, Dropdown, Modal } from 'react-bootstrap'
 import PageMetaData from '@/components/PageTitle'
 import PageHeader from '@/components/PageHeader'
 import { useDispatch, useSelector } from 'react-redux'
-import { getDisciplinaryActions, updateDisciplinaryActionStatus } from '../../../redux/features/disciplinaryActions/disciplinaryActionsSlice'
+import {
+  deleteDisciplinary,
+  getDisciplinaryActions,
+  updateDisciplinaryActionStatus,
+} from '../../../redux/features/disciplinaryActions/disciplinaryActionsSlice'
 import IconifyIcon from '@/components/wrappers/IconifyIcon'
 import { Link } from 'react-router-dom'
 
 export default function DisciplinaryActions() {
   const dispatch = useDispatch()
   const { disciplinaryActionsData, isLoading } = useSelector((state) => state.disciplinaryActions)
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [selectedAction, setSelectedAction] = useState(null)
+
+  const handleDeleteClick = (action) => {
+    setSelectedAction(action)
+    setShowDeleteModal(true)
+  }
+
+  const confirmDelete = () => {
+    if (!selectedAction) return
+    dispatch(deleteDisciplinary(selectedAction._id))
+      .unwrap()
+      .then(() => {
+        dispatch(getDisciplinaryActions(filters)) // refresh after delete
+        setShowDeleteModal(false)
+        setSelectedAction(null)
+      })
+      .catch((err) => {
+        console.error('Delete failed:', err)
+      })
+  }
 
   const [filters, setFilters] = useState({ status: '', type: '' })
   const [sortConfig, setSortConfig] = useState({ key: '', direction: 'asc' })
@@ -76,11 +102,10 @@ export default function DisciplinaryActions() {
     setSortConfig({ key, direction })
   }
 
-  const handleStatusChange = (actionId, newStatus) => {
-    dispatch(updateDisciplinaryActionStatus({ actionId, status: newStatus }))
+  const handleStatusChange = (actionId, newStatus, type) => {
+    dispatch(updateDisciplinaryActionStatus({ actionId, data: { status: newStatus, type } }))
       .unwrap()
       .then(() => {
-        // ✅ Refresh the list after successful update
         dispatch(getDisciplinaryActions(filters))
       })
       .catch((err) => {
@@ -120,7 +145,6 @@ export default function DisciplinaryActions() {
           <Col lg={2} md={6}>
             <Form.Select name="status" value={filters.status} onChange={handleFilterChange}>
               <option value="">All Status</option>
-              <option value="Active">Active</option>
               <option value="Review">In Review</option>
               <option value="Resolved">Resolved</option>
             </Form.Select>
@@ -181,10 +205,9 @@ export default function DisciplinaryActions() {
                   <td>
                     <Form.Select
                       value={action.status}
-                      onChange={(e) => handleStatusChange(action._id, e.target.value)}
+                      onChange={(e) => handleStatusChange(action._id, e.target.value, action.type)}
                       size="sm"
                       style={{ minWidth: '120px' }}>
-                      <option value="Active">Active</option>
                       <option value="Review">In Review</option>
                       <option value="Resolved">Resolved</option>
                     </Form.Select>
@@ -202,13 +225,7 @@ export default function DisciplinaryActions() {
                           Edit
                         </Dropdown.Item>
                         <Dropdown.Divider />
-                        <Dropdown.Item
-                          onClick={() => {
-                            if (window.confirm('Are you sure you want to delete this action?')) {
-                              console.log('Delete:', action._id) // TODO: Implement delete API
-                            }
-                          }}
-                          className="text-danger">
+                        <Dropdown.Item onClick={() => handleDeleteClick(action)} className="text-danger">
                           <IconifyIcon icon="mdi:delete" className="me-2" />
                           Delete
                         </Dropdown.Item>
@@ -231,6 +248,27 @@ export default function DisciplinaryActions() {
           </div>
         )}
       </Card>
+
+      <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm Delete</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Are you sure you want to delete this disciplinary action for{' '}
+          <strong>
+            {selectedAction?.employeeId ? `${selectedAction.employeeId.firstName} ${selectedAction.employeeId.lastName}` : 'this employee'}
+          </strong>
+          ?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" size="sm" onClick={() => setShowDeleteModal(false)}>
+            Cancel
+          </Button>
+          <Button variant="danger" size="sm" onClick={confirmDelete}>
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   )
 }

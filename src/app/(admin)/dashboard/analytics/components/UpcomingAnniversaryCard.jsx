@@ -12,20 +12,20 @@ const UpcomingAnniversaryCard = ({ anniversaries }) => {
       <Card.Body>
         <SimpleBar style={{ maxHeight: 310 }}>
           {anniversaries?.length > 0 ? (
-            anniversaries.map((user, idx) => (
+            anniversaries?.map((user, idx) => (
               <div
                 key={idx}
                 className="d-flex align-items-center justify-content-between mb-3 p-2 border-bottom rounded"
                 style={{ background: '#f9f9f9' }}>
                 <div>
-                  <strong className="text-capitalize">{user.name}</strong>
+                  <strong className="text-capitalize">{user?.name}</strong>
                   <div className="text-muted" style={{ fontSize: '0.85rem' }}>
-                    {user.designation}
+                    {user?.designation}
                   </div>
                 </div>
                 <div className="text-end">
                   <div>
-                    <span className="badge bg-info text-dark p-2">{user.joiningDate}</span>
+                    <span className="badge bg-info text-dark p-2">{user?.joiningDate}</span>
                   </div>
                 </div>
               </div>
