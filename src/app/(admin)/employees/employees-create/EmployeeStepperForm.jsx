@@ -141,7 +141,7 @@ export default function EmployeeStepperForm({ employeeId }) {
   // --- Prevent Form Auto Submit ---
   const handleFormSubmit = (e) => {
     e.preventDefault()
-    console.log('Form submit prevented - this should only log, not actually submit')
+
     // This prevents the form from auto-submitting
     // Actual submission happens through handleActualSubmit
   }
@@ -152,7 +152,6 @@ export default function EmployeeStepperForm({ employeeId }) {
 
     // Only allow submission on the last step
     if (activeStep !== steps.length - 1) {
-      console.log('Not on last step, preventing submission')
       return
     }
 
@@ -287,7 +286,6 @@ export default function EmployeeStepperForm({ employeeId }) {
   }
 
   useEffect(() => {
-    console.log('Edit employee effect triggered:', { editEmployee: !!editEmployee, employeeId })
     if (editEmployee && employeeId) {
       setFormData({
         userId: editEmployee?.userId || '',
@@ -335,7 +333,6 @@ export default function EmployeeStepperForm({ employeeId }) {
       // Mark form as ready AFTER setting the data
       setTimeout(() => {
         setIsFormReady(true)
-        console.log('Form marked as ready')
       }, 100)
     }
   }, [editEmployee, employeeId])

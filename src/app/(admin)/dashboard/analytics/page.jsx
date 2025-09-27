@@ -24,6 +24,8 @@ import Stats1 from './components/Stats1'
 import { getUsers } from '../../../../redux/features/user/userSlice'
 import TeamYearlyRatingChart from './components/TeamYearlyRatingChart'
 import WelcomeCard from './components/WelcomeCard'
+import { getHolidaysByMonth } from '../../../../redux/features/holiday/holidaySlice'
+import UpcomingHolidaysCard from './components/UpcomingHolidaysCard'
 
 export default function Home() {
   const dispatch = useDispatch()
@@ -34,6 +36,7 @@ export default function Home() {
   const { employeeDisciplinaryActionsData, upcomingReviewsData } = useSelector((state) => state.disciplinaryActions)
   const { allEmployee } = useSelector((state) => state.employee)
   const { allUsers } = useSelector((state) => state.user)
+  const { getHolidaysByMonthData } = useSelector((state) => state.holiday)
 
   const user = JSON.parse(localStorage.getItem('user') || '{}')
   const role = user?.data?.user?.role || 'Employee'
@@ -52,6 +55,7 @@ export default function Home() {
     dispatch(employeeMonthlyRating())
     dispatch(employeeYearlyRatings())
     dispatch(employeeDisciplinaryActions())
+    dispatch(getHolidaysByMonth())
   }, [dispatch, role])
 
   return (
@@ -102,6 +106,12 @@ export default function Home() {
 
             <Col lg={4} md={6} className="mb-3">
               <UpcomingReviewsCard reviews={upcomingReviewsData?.data} />
+            </Col>
+          </Row>
+
+          <Row className="mt-4">
+            <Col lg={4} md={6} className="mb-3">
+              <UpcomingHolidaysCard holidays={getHolidaysByMonthData?.data} />
             </Col>
           </Row>
         </>
