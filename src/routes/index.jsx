@@ -39,6 +39,10 @@ const TeamPerformanceList = lazy(() => import('@/app/(admin)/teams-performance/p
 const TeamIncentive = lazy(() => import('@/app/(admin)/teams-incentive/page'))
 const AddTeamIncentive = lazy(() => import('@/app/(admin)/teams-incentive/add-incentive/page'))
 
+// holiday
+
+const HolidayList = lazy(() => import('@/app/(admin)/holiday/page'))
+const HolidayCreate = lazy(() => import('@/app/(admin)/holiday/create-holiday/page'))
 
 // Pages Routes
 const Welcome = lazy(() => import('@/app/(admin)/pages/welcome/page'))
@@ -213,6 +217,20 @@ const generalRoutes = [
     path: '/teams-incentive/list/create',
     name: 'teamsIncentive',
     element: <AddTeamIncentive />,
+    roles: ['Admin', 'Hr'],
+  },
+
+  {
+    path: '/holiday/list',
+    name: 'holiday',
+    element: <HolidayList />,
+    roles: ['Admin', 'Hr'],
+  },
+
+  {
+    path: '/holiday/list/create',
+    name: 'holiday',
+    element: <HolidayCreate />,
     roles: ['Admin', 'Hr'],
   },
 ]

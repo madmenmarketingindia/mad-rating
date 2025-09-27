@@ -23,8 +23,6 @@ export default function UpsertEmployeePayroll() {
     year: now.getFullYear(),
   })
 
-  console.log('employeePayrollData', employeePayrollData)
-
   const [formData, setFormData] = useState({
     basicSalary: 0,
     conveyanceAllowance: 0,

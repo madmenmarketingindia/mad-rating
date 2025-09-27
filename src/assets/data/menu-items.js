@@ -102,4 +102,15 @@ export const MENU_ITEMS = [
     url: '/teams-incentive/list',
     roles: ['Admin', 'Hr'],
   },
+
+  {
+    key: 'holiday',
+    icon: 'mdi:calendar-star',
+    label: 'Holidays',
+    badge: {
+      variant: 'success',
+    },
+    url: '/holiday/list',
+    roles: ['Admin', 'Hr'],
+  },
 ]
