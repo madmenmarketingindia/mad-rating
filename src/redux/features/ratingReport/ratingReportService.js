@@ -1,9 +1,15 @@
 import { BASE_URL, getConfig } from '../../../utils/axiosConfig'
 import axiosInstance from '@/utils/axiosInstance'
 
-const getEmployeeWiseRatingReport = async () => {
+const getEmployeeWiseRatingReport = async ({ month, year }) => {
   const config = await getConfig()
-  const response = await axiosInstance.get(`${BASE_URL}/rating/employee-wise`, config)
+  const response = await axiosInstance.get(
+    `${BASE_URL}/rating/employee-wise`,
+    {
+      params: { month, year },
+    },
+    config,
+  )
   return response.data
 }
 
@@ -39,4 +45,19 @@ const getTeamsWiseRatings = async ({ month, year }) => {
   return response.data
 }
 
-export { getEmployeeWiseRatingReport, createEmployeeRating, getSingleMonthRating, getRatingHistory, getEmployeeYearlyRatings, getTeamsWiseRatings }
+const getCompanyRatings = async ({ month, year }) => {
+  const response = await axiosInstance.get(`${BASE_URL}/rating/company-rating`, {
+    params: { month, year },
+  })
+  return response.data
+}
+
+export {
+  getEmployeeWiseRatingReport,
+  createEmployeeRating,
+  getSingleMonthRating,
+  getRatingHistory,
+  getEmployeeYearlyRatings,
+  getTeamsWiseRatings,
+  getCompanyRatings,
+}

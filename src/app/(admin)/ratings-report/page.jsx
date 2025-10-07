@@ -13,8 +13,8 @@ export default function RatingsReports() {
 
   const [filters, setFilters] = useState({
     name: '',
-    month: '',
-    year: '',
+    month: new Date().getMonth() + 1,
+    year: new Date().getFullYear(),
   })
 
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' })
@@ -84,26 +84,10 @@ export default function RatingsReports() {
         breadcrumbItems={[{ label: 'Dashboard', href: '/' }, { label: 'Employee Ratings' }]}
         rightContent={
           <div className="d-flex gap-2">
-            <Form.Select size="sm" name="month" value={filters.month} onChange={handleFilterChange}>
-              <option value="">Month</option>
-              {Array.from({ length: 12 }, (_, i) => (
-                <option key={i + 1} value={i + 1}>
-                  {new Date(0, i).toLocaleString('default', { month: 'short' })}
-                </option>
-              ))}
-            </Form.Select>
-
-            <Form.Select size="sm" name="year" value={filters.year} onChange={handleFilterChange}>
-              <option value="">Year</option>
-              {Array.from({ length: 6 }, (_, i) => {
-                const year = new Date().getFullYear() - 5 + i
-                return (
-                  <option key={year} value={year}>
-                    {year}
-                  </option>
-                )
-              })}
-            </Form.Select>
+            <Button as={Link} to={`/ratings-report/add-rating?employeeId`} size="sm" variant="primary">
+              <IconifyIcon icon="bx:plus" className="me-1" />
+              Add Rating
+            </Button>
           </div>
         }
       />
@@ -113,19 +97,40 @@ export default function RatingsReports() {
           <Card>
             <CardBody>
               <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2 mb-3">
-                <Form.Control
-                  type="search"
-                  name="name"
-                  value={filters.name}
-                  onChange={handleFilterChange}
-                  placeholder="Search by employee..."
-                  style={{ width: '200px' }}
-                />
+                <div className="d-flex align-items-center gap-2">
+                  <Form.Control
+                    type="search"
+                    name="name"
+                    value={filters.name}
+                    onChange={handleFilterChange}
+                    placeholder="Search by employee..."
+                    style={{ width: '200px' }}
+                    size="sm"
+                  />
 
-                <Button as={Link} to={`/ratings-report/add-rating?employeeId`} size="sm" variant="primary">
-                  <IconifyIcon icon="bx:plus" className="me-1" />
-                  Add Rating
-                </Button>
+                  <div className="d-flex gap-2">
+                    <Form.Select size="sm" name="month" value={filters.month} onChange={handleFilterChange}>
+                      <option value="">Month</option>
+                      {Array.from({ length: 12 }, (_, i) => (
+                        <option key={i + 1} value={i + 1}>
+                          {new Date(0, i).toLocaleString('default', { month: 'short' })}
+                        </option>
+                      ))}
+                    </Form.Select>
+
+                    <Form.Select size="sm" name="year" value={filters.year} onChange={handleFilterChange}>
+                      <option value="">Year</option>
+                      {Array.from({ length: 6 }, (_, i) => {
+                        const year = new Date().getFullYear() - 5 + i
+                        return (
+                          <option key={year} value={year}>
+                            {year}
+                          </option>
+                        )
+                      })}
+                    </Form.Select>
+                  </div>
+                </div>
               </div>
 
               <div className="table-responsive">
@@ -140,7 +145,7 @@ export default function RatingsReports() {
                       <th onClick={() => handleSort('categories.teamPlay')}>Team Play {renderSortIcon('categories.teamPlay')}</th>
                       <th onClick={() => handleSort('categories.leadership')}>Leadership {renderSortIcon('categories.leadership')}</th>
                       <th onClick={() => handleSort('categories.extraMile')}>Extra Mile {renderSortIcon('categories.extraMile')}</th>
-                      <th onClick={() => handleSort('averageScore')}>Average Score {renderSortIcon('averageScore')}</th>
+                      <th onClick={() => handleSort('averageScore')}>Average Rating {renderSortIcon('averageScore')}</th>
                       <th>Action</th>
                     </tr>
                   </thead>

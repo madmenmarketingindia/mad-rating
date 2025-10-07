@@ -71,17 +71,6 @@ export const MENU_ITEMS = [
   },
 
   {
-    key: 'disciplinaryActions',
-    icon: 'mdi:alert-circle-outline',
-    label: 'Disciplinary Actions',
-    badge: {
-      variant: 'success',
-    },
-    url: '/disciplinary-actions/list',
-    roles: ['Admin', 'Hr'],
-  },
-
-  {
     key: 'teamsPerformance',
     icon: 'mdi:chart-line',
     label: 'Teams Performance',
@@ -100,6 +89,28 @@ export const MENU_ITEMS = [
       variant: 'success',
     },
     url: '/teams-incentive/list',
+    roles: ['Admin', 'Hr'],
+  },
+
+  {
+    key: 'disciplinaryActions',
+    icon: 'mdi:alert-circle-outline',
+    label: 'Disciplinary Actions',
+    badge: {
+      variant: 'success',
+    },
+    url: '/disciplinary-actions/list',
+    roles: ['Admin', 'Hr'],
+  },
+
+  {
+    key: 'closure',
+    icon: 'mdi:account-off-outline',
+    label: 'Closure',
+    badge: {
+      variant: 'success',
+    },
+    url: '/closure/list',
     roles: ['Admin', 'Hr'],
   },
 

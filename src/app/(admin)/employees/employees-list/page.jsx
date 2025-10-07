@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react'
-import { CardBody, Col, Row, Button, Card, Spinner, Table, Badge, Dropdown, Modal } from 'react-bootstrap'
+import { CardBody, Col, Row, Button, Card, Spinner, Table, Badge, Dropdown, Modal, Form } from 'react-bootstrap'
 import PageMetaData from '@/components/PageTitle'
 import IconifyIcon from '@/components/wrappers/IconifyIcon'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { deleteEmployee, exportEmployees, getEmployees, updateEmployee } from '../../../../redux/features/employee/employeeSlice'
 import PageHeader from '../../../../components/PageHeader'
 
 export default function EmployeesList() {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const { allEmployee, isLoading } = useSelector((state) => state.employee)
 
   const [search, setSearch] = useState('')
@@ -20,6 +21,7 @@ export default function EmployeesList() {
   const [selectedEmployee, setSelectedEmployee] = useState(null)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [deleting, setDeleting] = useState(false)
+  const [showModal, setShowModal] = useState(false)
 
   useEffect(() => {
     dispatch(getEmployees())
@@ -162,11 +164,15 @@ export default function EmployeesList() {
       toast.success('✅ Employee deleted successfully!')
       dispatch(getEmployees())
       setShowDeleteModal(false)
+      dispatch(getEmployees())
     } catch (error) {
       toast.error('❌ Failed to delete employee.')
       console.error(error)
+      setShowDeleteModal(false)
     } finally {
       setDeleting(false)
+      setShowDeleteModal(false)
+      dispatch(getEmployees())
     }
   }
 
@@ -219,6 +225,14 @@ export default function EmployeesList() {
 
   const handleExportEmployee = async () => {
     const response = await dispatch(exportEmployees())
+  }
+
+  const handleInitiateClosure = () => setShowModal(true)
+
+  const handleClose = () => setShowModal(false)
+
+  const handleNavigateSalary = (employeeId) => {
+    navigate(`/employee-payroll/list?employeeId=${employeeId}`)
   }
 
   return (
@@ -288,26 +302,34 @@ export default function EmployeesList() {
                             </th>
                             <th className="cursor-pointer user-select-none" onClick={() => handleSort('email')}>
                               <div className="d-flex align-items-center gap-1">
-                                Contact Info
+                                Closure
                                 <IconifyIcon icon={getSortIcon('email')} className="text-muted" />
                               </div>
                             </th>
                             <th className="cursor-pointer user-select-none" onClick={() => handleSort('officialDetails.joiningDate')}>
                               <div className="d-flex align-items-center gap-1">
-                                Important Data
+                                Disciplinary
                                 <IconifyIcon icon={getSortIcon('officialDetails.joiningDate')} className="text-muted" />
-                              </div>
-                            </th>
-                            <th className="cursor-pointer user-select-none" onClick={() => handleSort('employmentStatus')}>
-                              <div className="d-flex align-items-center gap-1">
-                                Status
-                                <IconifyIcon icon={getSortIcon('employmentStatus')} className="text-muted" />
                               </div>
                             </th>
 
                             <th className="cursor-pointer user-select-none" onClick={() => handleSort('employmentStatus')}>
                               <div className="d-flex align-items-center gap-1">
                                 Rating
+                                <IconifyIcon icon={getSortIcon('employmentStatus')} className="text-muted" />
+                              </div>
+                            </th>
+
+                            <th className="cursor-pointer user-select-none" onClick={() => handleSort('employmentStatus')}>
+                              <div className="d-flex align-items-center gap-1">
+                                Salary
+                                <IconifyIcon icon={getSortIcon('employmentStatus')} className="text-muted" />
+                              </div>
+                            </th>
+
+                            <th className="cursor-pointer user-select-none" onClick={() => handleSort('employmentStatus')}>
+                              <div className="d-flex align-items-center gap-1">
+                                Status
                                 <IconifyIcon icon={getSortIcon('employmentStatus')} className="text-muted" />
                               </div>
                             </th>
@@ -320,19 +342,43 @@ export default function EmployeesList() {
                               <tr key={emp._id}>
                                 {/* Name & Type */}
                                 <td>
-                                  <div className="d-flex align-items-center gap-2">
+                                  <div className="d-flex align-items-start gap-3">
+                                    {/* Avatar Circle */}
                                     <div
-                                      className="bg-primary rounded-circle d-flex align-items-center justify-content-center text-white"
-                                      style={{ width: '40px', height: '40px', fontSize: '14px', fontWeight: 'bold' }}>
+                                      className="bg-primary rounded-circle d-flex align-items-center justify-content-center text-white flex-shrink-0"
+                                      style={{ width: '48px', height: '48px', fontSize: '14px', fontWeight: '400' }}>
                                       {emp.firstName?.charAt(0)?.toUpperCase()}
                                       {emp.lastName?.charAt(0)?.toUpperCase()}
                                     </div>
-                                    <div>
-                                      <div className="fw-semibold text-capitalize">
-                                        {emp.firstName} {emp.lastName}
+
+                                    {/* Employee Details */}
+                                    <div className="d-flex flex-column">
+                                      <div className="fw-medium text-capitalize " style={{ fontSize: '14px' }}>
+                                        <Link to={`/employees/employees-profile?employeeId=${emp._id}`}>
+                                          {emp.firstName} {emp.lastName}
+                                        </Link>
                                       </div>
+
                                       <div className="text-muted small text-capitalize">
                                         {emp.officialDetails?.employeeType || '-'} • {emp.officialDetails?.designation || '-'}
+                                      </div>
+
+                                      <div className="d-flex align-items-center text-muted small mt-1">
+                                        <IconifyIcon icon="mdi:email-outline" className="me-1" />
+                                        {emp?.email}
+                                      </div>
+
+                                      <div className="d-flex align-items-center text-muted small">
+                                        <IconifyIcon icon="mdi:phone-outline" className="me-1" />
+                                        {emp?.phoneNumber || '-'}
+                                      </div>
+
+                                      {/* <div className="mt-1 text-muted small">
+                                        <span className="fw-semibold">DOB:</span> {formatDate(emp?.dateOfBirth)}
+                                      </div> */}
+
+                                      <div className="text-muted small">
+                                        <span className="fw-semibold">Joined:</span> {formatDate(emp?.officialDetails?.joiningDate)}
                                       </div>
                                     </div>
                                   </div>
@@ -341,26 +387,63 @@ export default function EmployeesList() {
                                 {/* Contact Info */}
                                 <td>
                                   <div className="small">
-                                    <div className="mb-1">
-                                      <IconifyIcon icon="mdi:email-outline" className="me-1 text-muted" />
-                                      {emp.email}
-                                    </div>
-                                    <div>
-                                      <IconifyIcon icon="mdi:phone-outline" className="me-1 text-muted" />
-                                      {emp.phoneNumber || '-'}
-                                    </div>
+                                    <td>
+                                      <Badge
+                                        bg="danger"
+                                        className="cursor-pointer"
+                                        style={{ fontSize: '12px', padding: '5px' }}
+                                        onClick={(emp) => handleInitiateClosure(emp)}>
+                                        Initiate Closure
+                                      </Badge>
+                                    </td>
                                   </div>
                                 </td>
 
-                                {/* Important Data */}
+                                {/* disciplinary Action  */}
+                                <td>
+                                  <Link
+                                    to="/disciplinary-actions/list"
+                                    className={`small fw-semibold text-decoration-none ${
+                                      emp?.disciplinaryAction?.type ? 'text-danger' : 'text-muted'
+                                    }`}
+                                    style={{
+                                      display: 'inline-block',
+                                      padding: '4px 6px',
+                                      borderRadius: '4px',
+                                      backgroundColor: emp?.disciplinaryAction?.type ? '#ffe5e5' : 'transparent',
+                                    }}>
+                                    {emp.disciplinaryAction?.type
+                                      ? `${emp.disciplinaryAction.type} ${
+                                          emp.disciplinaryAction.status === 'Review' && emp.disciplinaryAction.reviewPeriodLeft !== null
+                                            ? `(${emp?.disciplinaryAction.reviewPeriodLeft} days left)`
+                                            : ''
+                                        }`
+                                      : 'No Action'}
+                                  </Link>
+                                </td>
+
+                                <td>
+                                  <div className="d-flex align-items-center">
+                                    <Badge
+                                      bg={emp?.currentMonthAvg >= 4 ? 'success' : emp?.currentMonthAvg >= 3 ? 'warning' : 'danger'}
+                                      className="me-2">
+                                      {emp?.currentMonthAvg ?? 'N/A'}
+                                    </Badge>
+                                    <Link to="/ratings-reports/list">{renderStars(emp?.currentMonthAvg || 0)}</Link>
+                                  </div>
+                                </td>
+
                                 <td>
                                   <div className="small">
-                                    <div className="mb-1">
-                                      <strong>DOB:</strong> {formatDate(emp?.dateOfBirth)}
-                                    </div>
-                                    <div>
-                                      <strong>Joined:</strong> {formatDate(emp?.officialDetails?.joiningDate)}
-                                    </div>
+                                    <td>
+                                      <Badge
+                                        bg="primary"
+                                        className="cursor-pointer"
+                                        style={{ fontSize: '12px', padding: '5px' }}
+                                        onClick={() => handleNavigateSalary(emp._id)}>
+                                        Pending
+                                      </Badge>
+                                    </td>
                                   </div>
                                 </td>
 
@@ -372,17 +455,6 @@ export default function EmployeesList() {
                                     onClick={() => handleToggle(emp)}>
                                     {emp?.employmentStatus}
                                   </Badge>
-                                </td>
-
-                                <td>
-                                  <div className="d-flex align-items-center">
-                                    <Badge
-                                      bg={emp?.currentMonthAvg >= 4 ? 'success' : emp?.currentMonthAvg >= 3 ? 'warning' : 'danger'}
-                                      className="me-2">
-                                      {emp?.currentMonthAvg ?? 'N/A'}
-                                    </Badge>
-                                    {renderStars(emp?.currentMonthAvg || 0)}
-                                  </div>
                                 </td>
 
                                 {/* Actions */}
@@ -565,6 +637,44 @@ export default function EmployeesList() {
           </Card>
         </Col>
       </Row>
+
+      <Modal show={showModal} onHide={handleClose} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Initiate Closure</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group className="mb-3">
+              <Form.Label>Resignation Date</Form.Label>
+              <Form.Control type="date" />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Last Working Day</Form.Label>
+              <Form.Control type="date" />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Notice Period Days</Form.Label>
+              <Form.Control type="number" />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Reason for Separation</Form.Label>
+              <Form.Select>
+                <option value="">Select Reason</option>
+                <option value="Resignation">Resignation</option>
+                <option value="Termination">Termination</option>
+              </Form.Select>
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={handleClose}>
+            Submit
+          </Button>
+        </Modal.Footer>
+      </Modal>
 
       <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered>
         <Modal.Header closeButton>

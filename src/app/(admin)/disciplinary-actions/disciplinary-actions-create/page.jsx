@@ -11,7 +11,6 @@ import {
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { getUsers } from '../../../../redux/features/user/userSlice'
 import Select from 'react-select'
-import IconifyIcon from '@/components/wrappers/IconifyIcon'
 import toast from 'react-hot-toast'
 
 export default function DisciplinaryActionsForm() {
@@ -26,9 +25,9 @@ export default function DisciplinaryActionsForm() {
   // Form state
   const [formData, setFormData] = useState({
     employeeId: '',
-    type: 'Warning',
+    type: '',
     reason: '',
-    reviewPeriodDays: 0,
+    reviewPeriodDays: '',
   })
 
   // ✅ Form validation state
@@ -49,7 +48,7 @@ export default function DisciplinaryActionsForm() {
       const a = singleDisciplinaryActionData.data
       setFormData({
         employeeId: a.employeeId?._id || '',
-        type: a.type || 'Warning',
+        type: a.type || '',
         reason: a.reason || '',
         reviewPeriodDays: a.reviewPeriodDays || 0,
       })
@@ -75,10 +74,6 @@ export default function DisciplinaryActionsForm() {
 
     if (!formData.employeeId) {
       errors.employeeId = 'Employee is required'
-    }
-
-    if (!formData.reason.trim()) {
-      errors.reason = 'Reason is required'
     }
 
     if (formData.reviewPeriodDays < 0) {
@@ -132,7 +127,7 @@ export default function DisciplinaryActionsForm() {
         // Navigate after short delay
         setTimeout(() => {
           navigate('/disciplinary-actions/list')
-        }, )
+        })
       }
     } catch (error) {
       console.error('Save failed:', error)
@@ -208,11 +203,13 @@ export default function DisciplinaryActionsForm() {
                   Type <span className="text-danger">*</span>
                 </Form.Label>
                 <Form.Select name="type" value={formData.type} onChange={handleChange} required className={formErrors.type ? 'is-invalid' : ''}>
-                  <option value="Warning">Warning</option>
-                  <option value="Suspension">Suspension</option>
-                  <option value="Termination Notice">Termination Notice</option>
+                  <option value="">Select Type</option>
+                  <option value="Punctuation">Punctuation</option>
+                  <option value="Ethics">Ethics</option>
+                  <option value="Performance">Performance</option>
+                  <option value="Behavior">Behavior</option>
                 </Form.Select>
-                {formErrors.type && <div className="invalid-feedback">{formErrors.type}</div>}
+                {formErrors.type && <div className="invalid-feedback">{formErrors?.type}</div>}
               </Form.Group>
             </Col>
 
@@ -220,7 +217,7 @@ export default function DisciplinaryActionsForm() {
             <Col md={12}>
               <Form.Group>
                 <Form.Label>
-                  Reason <span className="text-danger">*</span>
+                  Reason <span className="text-danger"></span>
                 </Form.Label>
                 <Form.Control
                   as="textarea"
@@ -233,7 +230,6 @@ export default function DisciplinaryActionsForm() {
                   className={formErrors.reason ? 'is-invalid' : ''}
                 />
                 <Form.Text className="text-muted">Provide clear and specific details about the incident or behavior.</Form.Text>
-                {formErrors.reason && <div className="invalid-feedback">{formErrors.reason}</div>}
               </Form.Group>
             </Col>
 

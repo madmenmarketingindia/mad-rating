@@ -6,6 +6,7 @@ import {
   getRatingHistory,
   getEmployeeYearlyRatings,
   getTeamsWiseRatings,
+  getCompanyRatings,
 } from './ratingReportService'
 
 const initialState = {
@@ -14,6 +15,7 @@ const initialState = {
   monthRating: {},
   yearlyRatings: {},
   teamsWiseRatingsData: {},
+  companyRatingsData: {},
   ratingHistory: [],
   isAuthenticated: false,
   isError: false,
@@ -47,9 +49,9 @@ export const loadUserFromStorage = createAsyncThunk('user/loadFromStorage', asyn
   }
 })
 
-export const employeeWiseRatingReport = createAsyncThunk('ratingReport/get-all', async (_, thunkAPI) => {
+export const employeeWiseRatingReport = createAsyncThunk('ratingReport/get-all', async (filters, thunkAPI) => {
   try {
-    const response = await getEmployeeWiseRatingReport()
+    const response = await getEmployeeWiseRatingReport(filters)
     return response
   } catch (error) {
     const message = error.response?.data?.message || error.message || 'Fetch EmployeeWise Rating Report failed'
@@ -103,6 +105,16 @@ export const teamsWiseRatings = createAsyncThunk('rating/get-teams-wise-ratings'
     return response
   } catch (error) {
     const message = error.response?.data?.message || error.message || 'Fetch Team wise Rating Employee failed'
+    return thunkAPI.rejectWithValue(message)
+  }
+})
+
+export const companyRatings = createAsyncThunk('rating/get-company-ratings', async (data, thunkAPI) => {
+  try {
+    const response = await getCompanyRatings(data)
+    return response
+  } catch (error) {
+    const message = error.response?.data?.message || error.message || 'Fetch company rating failed'
     return thunkAPI.rejectWithValue(message)
   }
 })
@@ -209,6 +221,20 @@ export const ratingReportSlice = createSlice({
         state.isLoading = false
       })
       .addCase(teamsWiseRatings.rejected, (state, action) => {
+        state.message = action.payload
+        state.isError = true
+        state.isLoading = false
+      })
+      .addCase(companyRatings.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(companyRatings.fulfilled, (state, action) => {
+        state.isAuthenticated = true
+        state.isSuccess = true
+        state.companyRatingsData = action.payload
+        state.isLoading = false
+      })
+      .addCase(companyRatings.rejected, (state, action) => {
         state.message = action.payload
         state.isError = true
         state.isLoading = false

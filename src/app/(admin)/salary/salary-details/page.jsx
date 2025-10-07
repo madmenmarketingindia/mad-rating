@@ -174,9 +174,7 @@ export default function EmployeeSalaryDetailPage() {
 
                         <tr>
                           <td>Incentive</td>
-                          <td>
-                            {data.salaryDetails?.incentiveAmount?.toFixed(2) || 0} ({data?.rating?.averageScore}%)
-                          </td>
+                          <td>{data.salaryDetails?.incentiveAmount?.toFixed(2) || 0}</td>
                         </tr>
 
                         <tr>
