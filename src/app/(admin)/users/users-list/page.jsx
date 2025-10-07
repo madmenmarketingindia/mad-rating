@@ -134,11 +134,11 @@ export default function UsersList() {
                           <td>{user.email}</td>
                           <td>{user.role}</td>
                           <td>
-                            <Button as={Link} to={`/users/create-user?userId=${user._id}`} variant="soft-secondary" size="sm" className="me-2">
+                            <Button as={Link} to={`/users/create-user?userId=${user._id}`} variant="" size="sm" className="me-0">
                               <IconifyIcon icon="bx:edit" className="fs-16" />
                             </Button>
                             <Button
-                              variant="soft-danger"
+                              variant=""
                               size="sm"
                               onClick={() => {
                                 setSelectedUser(user)

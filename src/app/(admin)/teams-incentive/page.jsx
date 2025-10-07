@@ -78,23 +78,13 @@ export default function TeamIncentive() {
         title="Team Incentive"
         breadcrumbItems={[{ label: 'Dashboard', href: '/' }, { label: 'Team Incentive' }]}
         rightContent={
-          <div className="d-flex flex-column flex-md-row gap-2">
-            <div className="d-flex gap-2">
-              <Form.Select size="sm" value={selectedMonth} onChange={(e) => setSelectedMonth(Number(e.target.value))} style={{ width: '140px' }}>
-                {renderMonthOptions()}
-              </Form.Select>
-
-              <Form.Select size="sm" value={selectedYear} onChange={(e) => setSelectedYear(Number(e.target.value))} style={{ width: '120px' }}>
-                {renderYearOptions()}
-              </Form.Select>
-            </div>
-
+          <div className="flex">
             <Button
               as={Link}
               to="/teams-incentive/list/create"
               size="sm"
               variant="primary"
-              className="mt-2 mt-md-0  mb-2 md:md-0 w-50" // adds top margin on mobile only
+              className="mt-2 mt-md-0  mb-2 md:md-0" // adds top margin on mobile only
             >
               <IconifyIcon icon="bx:plus" className="me-1" />
               Add Incentive
@@ -102,6 +92,20 @@ export default function TeamIncentive() {
           </div>
         }
       />
+
+      <Row className="mb-3">
+        <Col>
+          <div className="d-flex gap-2">
+            <Form.Select size="sm" value={selectedMonth} onChange={(e) => setSelectedMonth(Number(e.target.value))} style={{ width: '140px' }}>
+              {renderMonthOptions()}
+            </Form.Select>
+
+            <Form.Select size="sm" value={selectedYear} onChange={(e) => setSelectedYear(Number(e.target.value))} style={{ width: '120px' }}>
+              {renderYearOptions()}
+            </Form.Select>
+          </div>
+        </Col>
+      </Row>
 
       <Row>
         <Col>
@@ -138,7 +142,7 @@ export default function TeamIncentive() {
                           <td>{teamIncentive.totalAmount}</td>
                           <td>
                             <Button variant="link" className="p-0" onClick={() => toggleRow(teamIncentive._id)}>
-                              {teamIncentive.members.length} Members
+                              {teamIncentive?.members?.length} Members
                             </Button>
                             <Collapse in={expandedRows[teamIncentive._id]}>
                               <div className="mt-2">
@@ -153,9 +157,9 @@ export default function TeamIncentive() {
                                   <tbody>
                                     {teamIncentive.members.map((member) => (
                                       <tr key={member._id}>
-                                        <td>{`${member.employeeId.firstName} ${member.employeeId.lastName}`}</td>
-                                        <td>{member.employeeId.email}</td>
-                                        <td>{member.amount}</td>
+                                        <td>{`${member?.employeeId?.firstName} ${member?.employeeId?.lastName}`}</td>
+                                        <td>{member?.employeeId?.email}</td>
+                                        <td>{member?.amount}</td>
                                       </tr>
                                     ))}
                                   </tbody>
@@ -165,11 +169,11 @@ export default function TeamIncentive() {
                           </td>
                           <td>{teamIncentive.month}</td>
                           <td>{teamIncentive.year}</td>
-                          <td>
-                            <Button variant="outline-none" size="lg" className="me-0 p-2" onClick={() => handleEdit(teamIncentive._id)}>
+                          <td className="d-flex gap-2 justify-content-center align-items-center">
+                            <Button variant="outline-none" size="lg" className="me-0 p-0 " onClick={() => handleEdit(teamIncentive._id)}>
                               <IconifyIcon icon="bx:edit" />
                             </Button>
-                            <Button variant="outline-none" size="lg" className="p-2" onClick={() => confirmDelete(teamIncentive._id)}>
+                            <Button variant="outline-none" size="lg" className="p-0" onClick={() => confirmDelete(teamIncentive._id)}>
                               <IconifyIcon icon="bx:trash" />
                             </Button>
                           </td>

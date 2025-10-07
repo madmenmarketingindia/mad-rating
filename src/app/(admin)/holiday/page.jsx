@@ -108,11 +108,23 @@ export default function HolidayList() {
                           <td>{holiday?.day}</td>
                           <td>
                             <div className="d-flex justify-content-center gap-2">
-                              <Button size="sm" variant="primary" as={Link} to={`/holiday/list/create?holidayId=${holiday._id}`}>
+                              {/* <Button size="sm" variant="primary" as={Link} to={`/holiday/list/create?holidayId=${holiday._id}`}>
                                 Update
                               </Button>
                               <Button size="sm" variant="danger" onClick={() => handleDeleteClick(holiday?._id)}>
                                 Delete
+                              </Button> */}
+
+                              <Button
+                                variant="outline-none"
+                                size="lg"
+                                className="me-0 p-0 "
+                                as={Link}
+                                to={`/holiday/list/create?holidayId=${holiday._id}`}>
+                                <IconifyIcon icon="bx:edit" />
+                              </Button>
+                              <Button variant="outline-none" size="lg" className="p-0" onClick={() => handleDeleteClick(holiday?._id)}>
+                                <IconifyIcon icon="bx:trash" />
                               </Button>
                             </div>
                           </td>

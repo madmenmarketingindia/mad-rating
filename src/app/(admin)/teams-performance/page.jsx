@@ -57,7 +57,11 @@ export default function TeamPerformance() {
       <PageHeader
         title="Team Performance"
         breadcrumbItems={[{ label: 'Dashboard', href: '/' }, { label: 'Team Performance' }]}
-        rightContent={
+        rightContent={<div></div>}
+      />
+
+      <Row  className='mb-3'>
+        <Col>
           <div className="d-flex gap-2">
             {/* Month selector */}
             <Form.Select size="sm" value={selectedMonth} onChange={(e) => setSelectedMonth(Number(e.target.value))} style={{ width: '140px' }}>
@@ -80,8 +84,8 @@ export default function TeamPerformance() {
               })}
             </Form.Select>
           </div>
-        }
-      />
+        </Col>
+      </Row>
 
       <Row>
         <Col>

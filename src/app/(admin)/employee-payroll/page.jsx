@@ -33,7 +33,7 @@ export default function EmployeePayrollList() {
   ]
 
   const years = Array.from({ length: 6 }, (_, i) => now.getFullYear() - 2 + i)
-  const statusOptions = ['Pending', 'Not Processed', 'Processed', 'Paid']
+  const statusOptions = ['Not Processed', 'Pending', 'Paid']
 
   useEffect(() => {
     dispatch(listPayrollByEmployees(filters))
@@ -61,30 +61,6 @@ export default function EmployeePayrollList() {
         breadcrumbItems={[{ label: 'Dashboard', href: '/' }, { label: 'Employee Payroll List' }]}
         rightContent={
           <div className="d-flex gap-2">
-            <Form.Select
-              size="sm"
-              style={{ maxWidth: 150 }}
-              value={filters.month}
-              onChange={(e) => setFilters((prev) => ({ ...prev, month: Number(e.target.value) }))}>
-              {months.map((m) => (
-                <option key={m.value} value={m.value}>
-                  {m.label}
-                </option>
-              ))}
-            </Form.Select>
-
-            <Form.Select
-              size="sm"
-              style={{ maxWidth: 100 }}
-              value={filters.year}
-              onChange={(e) => setFilters((prev) => ({ ...prev, year: Number(e.target.value) }))}>
-              {years.map((y) => (
-                <option key={y} value={y}>
-                  {y}
-                </option>
-              ))}
-            </Form.Select>
-
             <Button size="sm" variant="outline-success" onClick={() => dispatch(listPayrollByEmployees(filters))}>
               Refresh
             </Button>
@@ -95,9 +71,32 @@ export default function EmployeePayrollList() {
       <Row>
         <Col>
           <Row className="mb-1">
-            <Col className="d-flex md:justify-content-end my-2">
+            <Col className="d-flex gap-2 md:justify-content-end my-2">
+              <Form.Select
+                size="sm"
+                style={{ maxWidth: 150 }}
+                value={filters.month}
+                onChange={(e) => setFilters((prev) => ({ ...prev, month: Number(e.target.value) }))}>
+                {months.map((m) => (
+                  <option key={m.value} value={m.value}>
+                    {m.label}
+                  </option>
+                ))}
+              </Form.Select>
+
+              <Form.Select
+                size="sm"
+                style={{ maxWidth: 100 }}
+                value={filters.year}
+                onChange={(e) => setFilters((prev) => ({ ...prev, year: Number(e.target.value) }))}>
+                {years.map((y) => (
+                  <option key={y} value={y}>
+                    {y}
+                  </option>
+                ))}
+              </Form.Select>
               <Button onClick={() => handleExportEmployeePayroll()} size="sm" variant="primary">
-                <IconifyIcon icon="bx:download" className="me-1" />
+                <IconifyIcon icon="bx:download" className="me-0" />
                 Export Payroll
               </Button>
             </Col>
@@ -158,10 +157,10 @@ export default function EmployeePayrollList() {
                               </Link>
                             )}
 
-                            {emp.status === 'Paid' && (
+                            {(emp.status === 'Paid' || emp.status === 'Pending') && (
                               <Link to={`/employee-payroll/salary-list?employeeId=${emp._id}`}>
-                                <Button size="sm" variant="info">
-                                  View Salary
+                                <Button size="sm" variant={emp.status === 'Paid' ? 'success' : 'warning'}>
+                                  {emp.status === 'Paid' ? 'View Salary' : 'Pending Salary'}
                                 </Button>
                               </Link>
                             )}

@@ -143,18 +143,19 @@ export default function DisciplinaryActions() {
       <Card className="mb-3 p-3 shadow-sm">
         <Row className="g-2">
           <Col lg={2} md={6}>
-            <Form.Select name="status" value={filters.status} onChange={handleFilterChange}>
+            <Form.Select size="sm" name="status" value={filters.status} onChange={handleFilterChange}>
               <option value="">All Status</option>
               <option value="Review">In Review</option>
               <option value="Resolved">Resolved</option>
             </Form.Select>
           </Col>
           <Col lg={2} md={6}>
-            <Form.Select name="type" value={filters.type} onChange={handleFilterChange}>
+            <Form.Select size="sm" name="type" value={filters.type} onChange={handleFilterChange}>
               <option value="">All Types</option>
-              <option value="Warning">Warning</option>
-              <option value="Suspension">Suspension</option>
-              <option value="Termination Notice">Termination Notice</option>
+              <option value="Punctuation">Punctuation</option>
+              <option value="Ethics">Ethics</option>
+              <option value="Performance">Performance</option>
+              <option value="Behavior">Behavior</option>
             </Form.Select>
           </Col>
         </Row>

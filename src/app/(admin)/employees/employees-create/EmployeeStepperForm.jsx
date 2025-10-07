@@ -148,8 +148,6 @@ export default function EmployeeStepperForm({ employeeId }) {
 
   // --- Actual Submit Handler ---
   const handleActualSubmit = async () => {
-    console.log('Actual submit triggered', { activeStep, isEditMode: !!employeeId })
-
     // Only allow submission on the last step
     if (activeStep !== steps.length - 1) {
       return

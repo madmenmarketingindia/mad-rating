@@ -39,8 +39,10 @@ const TeamPerformanceList = lazy(() => import('@/app/(admin)/teams-performance/p
 const TeamIncentive = lazy(() => import('@/app/(admin)/teams-incentive/page'))
 const AddTeamIncentive = lazy(() => import('@/app/(admin)/teams-incentive/add-incentive/page'))
 
-// holiday
+// employee closure
+const EmployeeClosure = lazy(() => import('@/app/(admin)/closure/page'))
 
+// holiday
 const HolidayList = lazy(() => import('@/app/(admin)/holiday/page'))
 const HolidayCreate = lazy(() => import('@/app/(admin)/holiday/create-holiday/page'))
 
@@ -186,20 +188,6 @@ const generalRoutes = [
   },
 
   {
-    path: '/disciplinary-actions/list',
-    name: 'disciplinaryActions',
-    element: <DisciplinaryActionsList />,
-    roles: ['Admin', 'Hr'],
-  },
-
-  {
-    path: '/disciplinary-actions/list/create',
-    name: 'disciplinaryActions',
-    element: <DisciplinaryActionsCreate />,
-    roles: ['Admin', 'Hr'],
-  },
-
-  {
     path: '/teams-performance/list',
     name: 'teamsPerformance',
     element: <TeamPerformanceList />,
@@ -217,6 +205,27 @@ const generalRoutes = [
     path: '/teams-incentive/list/create',
     name: 'teamsIncentive',
     element: <AddTeamIncentive />,
+    roles: ['Admin', 'Hr'],
+  },
+
+  {
+    path: '/disciplinary-actions/list',
+    name: 'disciplinaryActions',
+    element: <DisciplinaryActionsList />,
+    roles: ['Admin', 'Hr'],
+  },
+
+  {
+    path: '/disciplinary-actions/list/create',
+    name: 'disciplinaryActions',
+    element: <DisciplinaryActionsCreate />,
+    roles: ['Admin', 'Hr'],
+  },
+
+  {
+    path: '/closure/list',
+    name: 'closure',
+    element: <EmployeeClosure />,
     roles: ['Admin', 'Hr'],
   },
 

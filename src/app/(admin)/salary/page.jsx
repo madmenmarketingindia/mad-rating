@@ -118,7 +118,7 @@ export default function EmployeeSalaryList() {
                       <tr>
                         <th>Month</th>
                         <th>Basic Salary</th>
-                        <th>Team Incentive</th>
+                        <th>Incentive</th>
                         <th>Salary</th>
                         <th>Net Pay</th>
                         <th>Status</th>
@@ -131,9 +131,9 @@ export default function EmployeeSalaryList() {
                           <tr key={idx}>
                             <td>{new Date(m.year, m.month - 1).toLocaleString('default', { month: 'long' })}</td>
                             <td>{m?.baseSalary.toFixed(2)}</td>
-                            <td>{m?.teamIncentive.toFixed(2)}</td>
+                            <td>{m?.incentive.toFixed(2)}</td>
                             <td>{m?.salary?.toFixed(2)}</td>
-                            <td>{m.netPay?.toFixed(2)}</td>
+                            <td>{m?.netPay?.toFixed(2)}</td>
                             <td>{m?.status}</td>
                             <td>
                               <Link to={`/employee-payroll/salary-list/detail?employeeId=${employee.employeeId}&month=${m.month}&year=${m.year}`}>

@@ -7,6 +7,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { calculateIncentive, singlePayrollEmployee, upsertPayroll } from '../../../../redux/features/attendancePayroll/attendancePayrollSlice'
 import { singleMemberIncentive } from '../../../../redux/features/teamIncentive/teamIncentiveSlice'
 import toast from 'react-hot-toast'
+import { companyRatings } from '../../../../redux/features/ratingReport/ratingReportSlice'
 
 export default function UpsertEmployeePayroll() {
   const dispatch = useDispatch()
@@ -16,6 +17,9 @@ export default function UpsertEmployeePayroll() {
 
   const { isLoading, employeePayrollData, calculatedIncentive } = useSelector((state) => state.attendancePayroll)
   const { singleMemberIncentiveData } = useSelector((state) => state.teamIncentive)
+  const { companyRatingsData } = useSelector((state) => state.ratingReport)
+  const [companyRating, setCompanyRating] = useState(0)
+  const [companyIncentive, setCompanyIncentive] = useState(0)
 
   const now = new Date()
   const [filters, setFilters] = useState({
@@ -40,7 +44,11 @@ export default function UpsertEmployeePayroll() {
     incentive: 0,
     status: '',
     teamIncentive: 0,
-    teamIncentiveEnabled: false,
+    companyIncentive: 0,
+    individualIncentive: 0,
+    enableTeamIncentive: false,
+    enableIndividualIncentive: false,
+    enableCompanyIncentive: false,
   })
 
   const months = [
@@ -59,12 +67,13 @@ export default function UpsertEmployeePayroll() {
   ]
 
   const years = Array.from({ length: 6 }, (_, i) => now.getFullYear() - 2 + i)
-  const statusOptions = ['Pending', 'Not Processed', 'Processed', 'Paid']
+  const statusOptions = ['Not Processed', 'Pending', 'Paid']
 
   useEffect(() => {
     if (employeeId) {
       dispatch(singlePayrollEmployee({ employeeId, ...filters }))
       dispatch(singleMemberIncentive({ employeeId, ...filters }))
+      dispatch(companyRatings({ employeeId, ...filters }))
     }
   }, [dispatch, employeeId, filters.month, filters.year])
 
@@ -74,32 +83,61 @@ export default function UpsertEmployeePayroll() {
     }
   }, [employeeId, filters.month, filters.year])
 
+  const isDataReady = !!employeePayrollData?.data || !!singleMemberIncentiveData?.data
+
   useEffect(() => {
-    if (employeePayrollData?.data) {
-      setFormData({
-        basicSalary: employeePayrollData.data.basicSalary || 0,
-        hra: employeePayrollData.data.hra || 0,
-        medicalAllowance: employeePayrollData.data.medicalAllowance || 0,
-        conveyanceAllowance: employeePayrollData.data.conveyanceAllowance || 0,
-        salary: employeePayrollData.data.salary || 0,
-        totalDays: employeePayrollData.data.totalDays || 30,
-        leaves: employeePayrollData.data.leaves || 0,
-        leaveAdjusted: employeePayrollData.data.leaveAdjusted || 0,
-        absent: employeePayrollData.data.absent || 0,
-        lateIn: employeePayrollData.data.lateIn || 0,
-        lateAdjusted: employeePayrollData.data.lateAdjusted || 0,
-        deductions: employeePayrollData.data.deductions || 0,
-        reimbursement: employeePayrollData.data.reimbursement || 0,
-        incentive: employeePayrollData.data.incentive || 0,
-        status: employeePayrollData.data.status || '',
-        teamIncentive: singleMemberIncentiveData?.data?.amount,
-      })
+    if (!isDataReady) return // don't set until data is ready
+
+    setFormData((prev) => ({
+      ...prev,
+      basicSalary: employeePayrollData?.data?.basicSalary ?? prev.basicSalary,
+      hra: employeePayrollData?.data?.hra ?? prev.hra,
+      medicalAllowance: employeePayrollData?.data?.medicalAllowance ?? prev.medicalAllowance,
+      conveyanceAllowance: employeePayrollData?.data?.conveyanceAllowance ?? prev.conveyanceAllowance,
+      salary: employeePayrollData?.data?.salary ?? prev.salary,
+      totalDays: employeePayrollData?.data?.totalDays ?? prev.totalDays,
+      leaves: employeePayrollData?.data?.leaves ?? prev.leaves,
+      leaveAdjusted: employeePayrollData?.data?.leaveAdjusted ?? prev.leaveAdjusted,
+      absent: employeePayrollData?.data?.absent ?? prev.absent,
+      lateIn: employeePayrollData?.data?.lateIn ?? prev.lateIn,
+      lateAdjusted: employeePayrollData?.data?.lateAdjusted ?? prev.lateAdjusted,
+      deductions: employeePayrollData?.data?.deductions ?? prev.deductions,
+      reimbursement: employeePayrollData?.data?.reimbursement ?? prev.reimbursement,
+      incentive: employeePayrollData?.data?.incentive ?? prev.incentive,
+      status: employeePayrollData?.data?.status ?? prev.status,
+
+      teamIncentive: employeePayrollData?.data?.teamIncentive ?? singleMemberIncentiveData?.data?.amount ?? prev.teamIncentive,
+      individualIncentive: employeePayrollData?.data?.individualIncentive ?? singleMemberIncentiveData?.data?.amount ?? prev.individualIncentive,
+      // ✅ Ensures checkboxes respect backend once ready
+      enableIndividualIncentive: employeePayrollData?.data?.enableIndividualIncentive ?? prev.enableIndividualIncentive ?? false,
+
+      enableTeamIncentive:
+        employeePayrollData?.data?.enableTeamIncentive ?? singleMemberIncentiveData?.data?.enableTeamIncentive ?? prev.enableTeamIncentive ?? false,
+
+      enableCompanyIncentive: employeePayrollData?.data?.enableCompanyIncentive ?? prev.enableCompanyIncentive ?? false,
+    }))
+  }, [isDataReady, employeePayrollData, singleMemberIncentiveData])
+
+  useEffect(() => {
+    if (calculatedIncentive?.data) {
+      setFormData((prev) => ({
+        ...prev,
+        individualIncentive: calculatedIncentive.data.incentiveAmount || prev.individualIncentive,
+        enableIndividualIncentive: (calculatedIncentive.data.incentiveAmount || prev.individualIncentive) > 0,
+      }))
     }
-  }, [employeePayrollData, dispatch])
+  }, [calculatedIncentive])
 
   const handleChange = (e) => {
     const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: Number(value) || value }))
+
+    // Allow only digits
+    const numericValue = value.replace(/\D/g, '') // removes anything not 0-9
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: numericValue, // store as string for the input
+    }))
   }
 
   const handleSubmit = async () => {
@@ -108,7 +146,10 @@ export default function UpsertEmployeePayroll() {
       month: filters.month,
       year: filters.year,
       ...formData,
-      teamIncentive: formData.teamIncentiveEnabled ? formData.teamIncentive : 0,
+      teamIncentive: formData.enableTeamIncentive ? formData.teamIncentive : 0,
+      incentive: formData ? formData.incentive : 0,
+      individualIncentive: formData.enableIndividualIncentive ? formData.individualIncentive : 0,
+      companyIncentive: formData.enableCompanyIncentive ? formData.companyIncentive : 0,
     }
     await dispatch(upsertPayroll(payload)).unwrap()
     await dispatch(singlePayrollEmployee({ employeeId, ...filters }))
@@ -152,16 +193,35 @@ export default function UpsertEmployeePayroll() {
       setFormData((prev) => ({
         ...prev,
         teamIncentive: amount,
-        teamIncentiveEnabled: amount > 0, // true if amount > 0, else false
       }))
     } else {
       setFormData((prev) => ({
         ...prev,
         teamIncentive: 0,
-        teamIncentiveEnabled: false,
       }))
     }
   }, [singleMemberIncentiveData])
+
+  useEffect(() => {
+    if (companyRatingsData) {
+      const rating = companyRatingsData?.data?.companyRating || 0
+      setCompanyRating(rating)
+
+      setFormData((prev) => {
+        const backendValue = prev?.companyIncentive || 0
+        const autoIncentive = rating >= 4.5 ? 4000 : 0
+
+        return {
+          ...prev,
+          companyIncentive: backendValue || autoIncentive,
+          enableCompanyIncentive: (backendValue || autoIncentive) > 0,
+        }
+      })
+
+      // Also update local state for display if you need
+      setCompanyIncentive((prev) => prev || (rating >= 4.5 ? 4000 : 0))
+    }
+  }, [companyRatingsData])
 
   return (
     <>
@@ -216,106 +276,97 @@ export default function UpsertEmployeePayroll() {
                     <h4 className="mb-3">Basic Information</h4>
                     <Col md={4}>
                       <Form.Label>Basic Salary</Form.Label>
-                      <Form.Control type="number" name="salary" value={formData.basicSalary} onChange={handleChange} />
+                      <Form.Control type="number" name="salary" value={formData.basicSalary} onChange={handleChange} disabled />
                     </Col>
 
                     <Col md={4} className="mb-2">
                       <Form.Label>HRA</Form.Label>
-                      <Form.Control type="number" name="salary" value={formData.hra} onChange={handleChange} />
+                      <Form.Control type="number" name="salary" value={formData.hra} onChange={handleChange} disabled />
                     </Col>
 
                     <Col md={4} className="mb-2">
                       <Form.Label>Medical Allowance</Form.Label>
-                      <Form.Control type="number" name="salary" value={formData.medicalAllowance} onChange={handleChange} />
+                      <Form.Control type="number" name="salary" value={formData.medicalAllowance} onChange={handleChange} disabled />
                     </Col>
 
                     <Col md={4} className="mb-2">
                       <Form.Label>Conveyance Allowance</Form.Label>
-                      <Form.Control type="number" name="salary" value={formData.conveyanceAllowance} onChange={handleChange} />
+                      <Form.Control type="number" name="salary" value={formData.conveyanceAllowance} onChange={handleChange} disabled />
                     </Col>
 
                     <Col md={4}>
                       <Form.Label>Salary</Form.Label>
-                      <Form.Control type="number" name="salary" value={formData.salary} onChange={handleChange} />
+                      <Form.Control type="number" name="salary" value={formData.salary} onChange={handleChange} disabled />
                     </Col>
                   </Row>
 
                   <Row>
                     <h4 className="mb-3 mt-3">Leave Information</h4>
-                    <Col md={4} className="mb-2">
+                    <Col md={2} className="mb-2">
                       <Form.Label>Total Days</Form.Label>
                       <Form.Control type="number" name="totalDays" value={formData.totalDays} onChange={handleChange} />
                     </Col>
-                    <Col md={4} className="mb-2">
-                      <Form.Label>Leaves</Form.Label>
-                      <Form.Control type="number" name="leaves" value={formData.leaves} onChange={handleChange} />
-                    </Col>
                   </Row>
 
-                  <Row className="mb-2">
-                    <Col md={4}>
-                      <Form.Label>Leave Adjusted</Form.Label>
-                      <Form.Control type="number" name="leaveAdjusted" value={formData.leaveAdjusted} onChange={handleChange} />
+                  <Row className="mb-2 mt-2">
+                    <Col md={2} className="mb-2">
+                      <Form.Label>Leaves</Form.Label>
+                      <Form.Control type="text" name="leaves" value={formData.leaves} onChange={handleChange} />
                     </Col>
-                    <Col md={4}>
+                    <Col md={2}>
+                      <Form.Label>Leave Adjusted</Form.Label>
+                      <Form.Control type="text" name="leaveAdjusted" value={formData.leaveAdjusted} onChange={handleChange} />
+                    </Col>
+                    {/* <Col md={2}>
                       <Form.Label>Absent</Form.Label>
                       <Form.Control type="number" name="absent" value={formData.absent} onChange={handleChange} />
-                    </Col>
-                    <Col md={4}>
+                    </Col> */}
+
+                    <Col md={2}>
                       <Form.Label>Late In</Form.Label>
-                      <Form.Control type="number" name="lateIn" value={formData.lateIn} onChange={handleChange} />
+                      <Form.Control type="text" name="lateIn" value={formData.lateIn} onChange={handleChange} />
+                    </Col>
+
+                    <Col md={2}>
+                      <Form.Label>Late Adjusted</Form.Label>
+                      <Form.Control type="text" name="lateAdjusted" value={formData.lateAdjusted} onChange={handleChange} />
                     </Col>
                   </Row>
 
-                  <Row className="mb-2">
-                    <Col md={4}>
-                      <Form.Label>Late Adjusted</Form.Label>
-                      <Form.Control type="number" name="lateAdjusted" value={formData.lateAdjusted} onChange={handleChange} />
-                    </Col>
-                    <Col md={4}>
+                  {/* <Row className="mb-2">
+                    <Col md={2}>
                       <Form.Label>Deductions</Form.Label>
                       <Form.Control type="number" name="deductions" value={formData.deductions} onChange={handleChange} />
                     </Col>
-                    <Col md={4}>
-                      <Form.Label>Reimbursement</Form.Label>
-                      <Form.Control type="number" name="reimbursement" value={formData.reimbursement} onChange={handleChange} />
-                    </Col>
-                  </Row>
+                  </Row> */}
 
-                  <Row className="mb-3">
-                    <Col md={4}>
-                      <Form.Label>Status</Form.Label>
-                      <Form.Select name="status" value={formData.status} onChange={handleChange}>
-                        <option value="">Select Status</option>
-                        {statusOptions.map((s) => (
-                          <option key={s} value={s}>
-                            {s}
-                          </option>
-                        ))}
-                      </Form.Select>
+                  <Row className="mb-2">
+                    <Col md={2}>
+                      <Form.Label>Reimbursement</Form.Label>
+                      <Form.Control type="text" name="reimbursement" value={formData.reimbursement} onChange={handleChange} />
                     </Col>
                   </Row>
 
                   <Row className="mb-4">
                     <h4 className="mb-3 mt-3">Incentive</h4>
                     <Row>
-                      <Col md={4}>
+                      <Col md={3}>
                         <Form.Check
                           type="checkbox"
                           id="enableTeamIncentive"
-                          label="Enable Team Incentive"
-                          checked={formData.teamIncentiveEnabled || false}
+                          label="Team Incentive"
+                          checked={formData.enableTeamIncentive}
                           onChange={(e) =>
                             setFormData((prev) => ({
                               ...prev,
-                              teamIncentiveEnabled: e.target.checked,
+                              enableTeamIncentive: e.target.checked,
                             }))
                           }
                           className="mb-2"
                         />
 
                         <Form.Control
-                          type="number"
+                          type="text"
                           name="teamIncentive"
                           value={formData.teamIncentive}
                           onChange={(e) =>
@@ -327,17 +378,72 @@ export default function UpsertEmployeePayroll() {
                         />
                       </Col>
 
-                      <Col md={2} className="mt-1">
-                        <Form.Label>Incentive</Form.Label>
-                        <Form.Control type="number" name="incentive" value={formData.incentive} onChange={handleChange} />
+                      <Col md={3}>
+                        {/* <Form.Label>Incentive</Form.Label> */}
+                        <Form.Check
+                          type="checkbox"
+                          id="enableIncentive"
+                          label="Individual Incentive"
+                          checked={formData.enableIndividualIncentive || false}
+                          onChange={(e) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              enableIndividualIncentive: e.target.checked,
+                            }))
+                          }
+                          className="mb-2"
+                        />
+                        <Form.Control
+                          type="text"
+                          name="individualIncentive"
+                          value={formData.individualIncentive}
+                          onChange={(e) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              individualIncentive: Number(e.target.value) || 0,
+                            }))
+                          }
+                        />
                       </Col>
-                      <Col md={3} className="" style={{ marginTop: '30px' }}>
+
+                      <Col md={3}>
+                        {/* <Form.Label>Incentive</Form.Label> */}
+                        <Form.Check
+                          type="checkbox"
+                          id="companyIncentive"
+                          label={`Company Incentive (${companyRatingsData?.data?.companyRating || ''})`}
+                          checked={formData.enableCompanyIncentive || false}
+                          onChange={(e) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              enableCompanyIncentive: e.target.checked,
+                            }))
+                          }
+                          className="mb-2"
+                        />
+                        <Form.Control type="number" name="companyIncentive" value={formData.companyIncentive} onChange={handleChange} />
+                      </Col>
+                      {/* <Col md={3} className="" style={{ marginTop: '30px' }}>
                         <Form.Label></Form.Label>
                         <Button variant="primary" onClick={() => setShowModal(true)}>
                           Calculate Incentive
                         </Button>
-                      </Col>
+                      </Col> */}
                     </Row>
+                  </Row>
+
+                  <Row className="mb-3">
+                    <Col md={2}>
+                      <Form.Label>Status</Form.Label>
+                      <Form.Select name="status" value={formData.status} onChange={handleChange}>
+                        <option value="">Select Status</option>
+                        {statusOptions.map((s) => (
+                          <option key={s} value={s}>
+                            {s}
+                          </option>
+                        ))}
+                      </Form.Select>
+                    </Col>
                   </Row>
 
                   <Button variant="success" onClick={handleSubmit}>
@@ -380,6 +486,9 @@ export default function UpsertEmployeePayroll() {
                         <th>Deductions</th>
                         <th>Reimbursement</th>
                         <th>Incentive</th>
+                        <th>Team Incentive</th>
+                        <th>Individual Incentive</th>
+                        <th>Company Incentive</th>
                         <th>Total Payable</th>
                         <th>Status</th>
                       </tr>
@@ -398,17 +507,20 @@ export default function UpsertEmployeePayroll() {
                         <td>{employeePayrollData.data.conveyanceAllowance}</td>
                         <td>{employeePayrollData.data.totalDays}</td>
                         <td>{employeePayrollData.data.totalDays - (employeePayrollData.data.absent + employeePayrollData.data.leaves)}</td>
-                        <td>{employeePayrollData.data.absent}</td>
-                        <td>{employeePayrollData.data.leaves}</td>
-                        <td>{employeePayrollData.data.leaveAdjusted}</td>
-                        <td>{employeePayrollData.data.lateIn}</td>
-                        <td>{employeePayrollData.data.lateAdjusted}</td>
+                        <td>{employeePayrollData?.data?.absent}</td>
+                        <td>{employeePayrollData?.data?.leaves}</td>
+                        <td>{employeePayrollData?.data?.leaveAdjusted}</td>
+                        <td>{employeePayrollData?.data?.lateIn}</td>
+                        <td>{employeePayrollData?.data?.lateAdjusted}</td>
                         <td>{employeePayrollData.data.payableDays}</td>
-                        <td>{employeePayrollData.data.salary}</td>
-                        <td>{employeePayrollData.data.deductions}</td>
-                        <td>{employeePayrollData.data.reimbursement}</td>
-                        <td>{employeePayrollData.data.incentive}</td>
-                        <td>{employeePayrollData.data.total}</td>
+                        <td>{employeePayrollData?.data?.salary}</td>
+                        <td>{employeePayrollData?.data?.deductions?.toFixed(2)}</td>
+                        <td>{employeePayrollData?.data?.reimbursement}</td>
+                        <td>{employeePayrollData?.data?.incentive}</td>
+                        <td>{employeePayrollData?.data?.teamIncentive}</td>
+                        <td>{employeePayrollData?.data?.individualIncentive}</td>
+                        <td>{employeePayrollData?.data?.companyIncentive}</td>
+                        <td>{employeePayrollData?.data?.total}</td>
                         <td>{employeePayrollData.data.status}</td>
                       </tr>
                     </tbody>
