@@ -96,7 +96,7 @@ export default function EmployeePayrollList() {
                 ))}
               </Form.Select>
               <Button onClick={() => handleExportEmployeePayroll()} size="sm" variant="primary">
-                <IconifyIcon icon="bx:download" className="me-0" />
+                <IconifyIcon icon="bx:download" className="me-1" />
                 Export Payroll
               </Button>
             </Col>

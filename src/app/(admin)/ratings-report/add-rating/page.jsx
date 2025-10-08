@@ -136,12 +136,12 @@ export default function RatingsReports() {
     const response = dispatch(createRating(payload))
     if (queryEmployeeId) {
       toast.success('Rating updated successfully!')
+       dispatch(employeeRatingHistory(selectedEmployeeId))
     } else {
       toast.success('Rating created successfully!')
+       dispatch(employeeRatingHistory(selectedEmployeeId))
     }
-    if (response.success) {
-      dispatch(employeeRatingHistory(selectedEmployeeId))
-    }
+   
   }
 
   const employeeName = monthRating?.data?.employeeId ? `${monthRating.data.employeeId.firstName} ${monthRating.data.employeeId.lastName}` : 'Employee'
@@ -194,9 +194,18 @@ export default function RatingsReports() {
         ]}
         rightContent={
           <div className="d-flex gap-2">
+            <Button as={Link} to="/ratings-reports/list" size="sm" variant="secondary">
+              Back
+            </Button>
+          </div>
+        }
+      />
+      <Row className="mb-3">
+        <Col>
+          <div className="d-flex gap-2">
             {/* Employee Dropdown if not from query */}
             {!queryEmployeeId && (
-              <Form.Select size="sm" value={selectedEmployeeId} onChange={(e) => setSelectedEmployeeId(e.target.value)} style={{ minWidth: '200px' }}>
+              <Form.Select size="sm" value={selectedEmployeeId} onChange={(e) => setSelectedEmployeeId(e.target.value)} style={{ width: '150px' }}>
                 <option value="">Select Employee</option>
                 {allEmployee?.data?.map((emp) => (
                   <option key={emp._id} value={emp._id}>
@@ -228,13 +237,9 @@ export default function RatingsReports() {
                 )
               })}
             </Form.Select>
-
-            <Button as={Link} to="/ratings-reports/list" size="sm" variant="secondary">
-              Back
-            </Button>
           </div>
-        }
-      />
+        </Col>
+      </Row>
 
       <>
         <Row>

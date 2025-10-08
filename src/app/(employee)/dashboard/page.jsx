@@ -17,7 +17,6 @@ export default function EmployeeHome() {
   return (
     <>
       <PageMetaData title="Analytics" />
-      anirudh
     </>
   )
 }
